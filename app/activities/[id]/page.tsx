@@ -31,13 +31,13 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         </Link>
       </p>
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-full bg-[#12382c] px-3 py-1 text-white">{kindLabel(activity.kind)}</span>
-        <span className="rounded-full bg-[#e7f0ec] px-3 py-1">{activity.category}</span>
+        <span className="rounded-full bg-[#88012B] px-3 py-1 text-white">{kindLabel(activity.kind)}</span>
+        <span className="rounded-full bg-[#e8f3fb] px-3 py-1">{activity.category}</span>
         <span className="rounded-full bg-[#f6f1e6] px-3 py-1">{difficultyLabel(activity.difficulty)}</span>
         {activity.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 font-medium">範例資料</span> : null}
         {activity.status === "cancelled" ? <span className="rounded-full bg-red-100 px-3 py-1">已取消</span> : null}
         {activity.organizerVerified ? (
-          <span className="rounded-full bg-[#e5f4ec] px-3 py-1 font-medium text-[#0d3b2e] ring-1 ring-[#0d3b2e]">已驗證主辦</span>
+          <span className="rounded-full bg-[#e8f3fb] px-3 py-1 font-medium text-[#0058A5] ring-1 ring-[#0058A5]">已驗證主辦</span>
         ) : (
           <span className="rounded-full bg-white px-3 py-1 ring-1">主辦尚未驗證</span>
         )}
@@ -45,10 +45,12 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       <h1 className="text-4xl font-bold leading-tight">{activity.title}</h1>
       <p className="text-xl">{formatTaipei(activity.startsAt)} 到 {formatTaipei(activity.endsAt)}</p>
       <p className="text-lg">
+        {activity.branchName ? <>據點：{activity.branchName}<br /></> : null}
         {activity.locationName}
         <br />
         {activity.address}
       </p>
+      {activity.speaker ? <p>講座講者：{activity.speaker}（僅標示姓名，不代表療效或專業背書）</p> : null}
       <p className="text-lg font-medium">{spotsLabel(activity.goingCount, activity.capacity)}</p>
       {activity.waitlistCount > 0 ? <p>目前候補 {activity.waitlistCount} 人</p> : null}
       <p className="whitespace-pre-wrap text-lg leading-relaxed">{activity.description}</p>
@@ -59,7 +61,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         <p>{MEDICAL_DISCLAIMER}</p>
       </section>
 
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">報名</h2>
         {!user ? (
           <p>
@@ -83,7 +85,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           <ActionForm action={rsvpAction}>
             <input type="hidden" name="activity_id" value={activity.id} />
             <label className="flex min-h-12 items-start gap-3">
-              <input type="checkbox" name="safety" className="mt-1 size-6 accent-[#12382c]" required />
+              <input type="checkbox" name="safety" className="mt-1 size-6 accent-[#88012B]" required />
               <span>{SELF_DECLARATION}</span>
             </label>
             <Button type="submit" disabled={started || activity.status !== "published"}>
@@ -94,7 +96,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         ) : null}
       </section>
 
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">主辦</h2>
         <p className="text-lg">
           {activity.organizerName} {activity.organizerVerified ? "（已驗證）" : ""}

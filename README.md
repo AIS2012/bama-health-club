@@ -1,6 +1,6 @@
 # 八馬健康俱樂部
 
-給大臺北熟齡與退休朋友的會員網站。可以看活動、報名或候補、加入社團、做每日打卡，管理員可以在後台維護內容。
+Total Swiss 八馬國際事業的活動平台。夥伴、愛用者與一般大眾都可以看活動、報名或候補、加入社團、做每日打卡。管理員與據點管理員可以在後台維護內容。
 
 目前入會免費。資料表已留會員方案與價格欄位，這一版沒有金流。全站介面是繁體中文，預設字級 18px，可切換較大、特大。
 
@@ -23,6 +23,7 @@ npm run dev
 | --- | --- | --- |
 | 會員 | member@bama.example | 陳阿姨 |
 | 管理員 | admin@bama.example | 林志工 |
+| 台北據點管理員 | branch@bama.example | 林據點 |
 
 活動、社團、挑戰標題裡的「範例」是種子資料，不是正式場次。松山那一場名額是 1，用來看候補。
 
@@ -45,7 +46,7 @@ npm run build
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 瀏覽器與伺服器用的 anon key。新版 publishable key 也可填在 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`。 |
 | `SUPABASE_SERVICE_ROLE_KEY` | 只放伺服器。每日提醒與候補遞補寄信用。不可加 `NEXT_PUBLIC_`。 |
 | `RESEND_API_KEY` | 有這把金鑰才真的寄信。沒有時報名與提醒會略過，網站仍可用。 |
-| `NEXT_PUBLIC_SITE_URL` | 本機 `http://127.0.0.1:43123`，正式 `https://club.ais2012.com`。登入信與信內連結用它。 |
+| `NEXT_PUBLIC_SITE_URL` | 本機 `http://127.0.0.1:43123`。正式網址由公司決定後再填，登入信與信內連結會用它。 |
 | `RESEND_FROM` | 選填。寄件者，須是 Resend 已驗證的網域。 |
 | `CRON_SECRET` | 選填。`/api/cron/reminders` 要帶 `Authorization: Bearer <值>`。 |
 
@@ -56,9 +57,10 @@ npm run build
 1. 建立 Supabase 專案。
 2. 在 SQL Editor 依序貼上並執行：
    - `supabase/migrations/20261119120000_init.sql`
+   - `supabase/migrations/20261119143000_totalswiss_branches.sql`
    - `supabase/seed.sql`
-3. Authentication → Providers：開啟 Email。若要魔法連結或註冊確認信，設定寄信。Google 登入要另外貼上 Google 的 Client ID 與 Secret，並把重新導向網址設成 `https://club.ais2012.com/auth/callback`。
-4. Authentication → URL Configuration：Site URL 設 `https://club.ais2012.com`，Redirect URLs 加上本機與正式網址的 `/auth/callback`。
+3. Authentication → Providers：開啟 Email。若要魔法連結或註冊確認信，設定寄信。Google 登入要另外貼上 Google 的 Client ID 與 Secret，重新導向網址用正式網域的 `/auth/callback`。
+4. Authentication → URL Configuration：Site URL 設成正式網址，Redirect URLs 加上本機與正式網址的 `/auth/callback`。
 5. 把上面的環境變數填進部署平台。
 6. 第一位正式管理員不會從註冊表單產生。用 SQL Editor（或 service role）執行：
 
@@ -85,25 +87,19 @@ Supabase 模式下，排程與候補信的寄件清單需要 `SUPABASE_SERVICE_R
 
 ## 部署建議：Vercel
 
-建議放在 **Vercel**，不要放 Cloudflare Workers。
+建議放在 **Vercel**。這個專案是 Next.js App Router，含 Server Actions、Cookie 工作階段，以及每天一次的提醒。正式網域由 Total Swiss 決定後，再把 `NEXT_PUBLIC_SITE_URL` 設成那個網址。Cloudflare Workers 需要再套 OpenNext，不建議作為第一個正式環境。
 
-這個專案是 Next.js App Router，含 Server Actions、Cookie 工作階段，以及每天一次的提醒。Vercel 對這套是原生支援，`vercel.json` 的 Cron 也可以直接用。Cloudflare 需要再套 OpenNext 之類的轉接，Server Actions 與 Node API 比較容易踩到執行環境差異，不划算。
+## 還需要公司確認
 
-DNS 在 Cloudflare，只新增子網域，不要改現有網站：
-
-1. Vercel 專案加入網域 `club.ais2012.com`。
-2. Cloudflare DNS 新增一筆 **CNAME**：名稱 `club`，目標用 Vercel 畫面上給的值（通常是 `cname.vercel-dns.com`）。
-3. 這筆紀錄先用 **DNS only**（灰雲），讓憑證由 Vercel 簽發。
-4. 不要修改 `@`（`ais2012.com`）與 `english`（`english.ais2012.com`）的任何紀錄。
-
-`NEXT_PUBLIC_SITE_URL` 設成 `https://club.ais2012.com`。
-
-若仍想放 Cloudflare，要用 OpenNext 重新封裝，並拿掉本機檔案資料庫；正式路徑本來就走 Supabase，但設定與除錯成本較高。不建議作為第一個正式環境。
+- 官方標誌圖檔。頁首現在是文字與虛線框，核准後再換上，不要外連官網圖。
+- 16 處據點的營業時間。地址與公開電子信箱依官網據點頁，時間尚未寫死。
+- 夥伴編號怎麼核對。目前只保存使用者自填的編號，並標成待公司驗證。
+- 加入事業的法定揭露。頁面已說明這是多層次傳銷、需要推薦人與公司審核；正式文案請法務確認。
 
 ## 這一版沒有做的事
 
-- 沒有付款。`membership_plans.price_cents` 只是預留。
+- 沒有付款、購物車、組織圖、獎金或招募排名。
 - Google 登入按鈕在示範模式會說明尚未連接；正式環境還要在 Supabase 打開 Google provider。
 - 沒有簡訊。
 - 法律頁是草稿。
-- 不提供診斷、療效或個人健康報告。
+- 不提供診斷、療效或個人健康報告，挑戰也不紀錄產品使用。

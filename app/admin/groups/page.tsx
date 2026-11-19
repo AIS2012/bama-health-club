@@ -15,13 +15,13 @@ export default async function AdminGroupsPage() {
       <h2 className="text-3xl font-bold">社團</h2>
       <ul className="grid gap-2">
         {groups.map((group) => (
-          <li key={group.id} className="rounded-xl bg-white p-4 ring-1 ring-[#12382c]/20">
+          <li key={group.id} className="rounded-xl bg-white p-4 ring-1 ring-[#88012B]/20">
             {group.name} · {group.memberCount} 人{group.isSample ? " · 範例" : ""}
           </li>
         ))}
       </ul>
       <h3 className="text-2xl font-bold">新增社團</h3>
-      <ActionForm action={saveGroupAction} className="rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <ActionForm action={saveGroupAction} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <label className="grid gap-2">
           名稱
           <Input name="name" required />

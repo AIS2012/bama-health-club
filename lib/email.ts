@@ -41,8 +41,8 @@ export async function sendEmail(input: SendInput): Promise<SendResult> {
 
 function layout(title: string, body: string) {
   return `<div style="font-family:'Noto Sans TC',sans-serif;font-size:18px;line-height:1.6;color:#1a1a1a;background:#fbf7f1;padding:24px">
-    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:2px solid #12382c;border-radius:12px;padding:24px">
-      <p style="margin:0 0 8px;font-size:14px;letter-spacing:0.08em;color:#12382c">八馬健康俱樂部</p>
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:2px solid #88012B;border-radius:12px;padding:24px">
+      <p style="margin:0 0 8px;font-size:14px;letter-spacing:0.08em;color:#88012B">八馬健康俱樂部</p>
       <h1 style="font-size:24px;margin:0 0 16px">${escapeHtml(title)}</h1>
       ${body}
       <p style="margin-top:24px;font-size:16px;color:#3f3f3f">這封信不是醫療建議。工作人員不會要求您轉帳或操作 ATM。</p>

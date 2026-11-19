@@ -33,7 +33,7 @@ export default async function LoginPage({
           登入連結無效或已過期，請再試一次。
         </p>
       ) : null}
-      <section className="grid gap-4 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-4 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">信箱與密碼</h2>
         <ActionForm action={signInAction}>
           <input type="hidden" name="next" value={next} />
@@ -48,7 +48,7 @@ export default async function LoginPage({
           <Button type="submit">登入</Button>
         </ActionForm>
       </section>
-      <section className="grid gap-4 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-4 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">改用登入信</h2>
         <p>我們寄一封只能用一次的連結，30 分鐘內有效。不會用這封信向您要密碼或轉帳。</p>
         <ActionForm action={magicLinkAction}>
@@ -61,7 +61,7 @@ export default async function LoginPage({
           </Button>
         </ActionForm>
       </section>
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">Google 登入</h2>
         {demo ? (
           <p>示範模式還沒有連接 Supabase，Google 登入要等正式環境設定完成。</p>

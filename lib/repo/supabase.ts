@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { reminderMessage, rsvpMessage, sendEmail } from "@/lib/email";
+import { branchById } from "@/lib/branches";
 import { startOfTodayTaipeiIso, todayTaipei } from "@/lib/format";
 import type { Repo } from "@/lib/repo/types";
 import type {
@@ -26,7 +27,7 @@ import { parseActivity, parseChallenge, parseGroup, parseProfile, parseSignUp } 
 import { siteUrl } from "@/lib/config";
 
 const ACTIVITY_COLUMNS =
-  "id, title, kind, category, description, starts_at, ends_at, location_name, address, city, district, capacity, difficulty, organizer_id, organizer_name, organizer_verified, is_sample, status";
+  "id, title, kind, category, description, starts_at, ends_at, location_name, address, city, district, capacity, difficulty, organizer_id, organizer_name, organizer_verified, is_sample, status, branch_id, speaker";
 
 type ActivityRow = {
   id: string;
@@ -47,6 +48,8 @@ type ActivityRow = {
   organizer_verified: boolean;
   is_sample: boolean;
   status: ActivityStatus;
+  branch_id: string | null;
+  speaker: string | null;
 };
 
 function fail(error: { message: string } | null, fallback = "暫時無法完成，請稍後再試"): Result {
@@ -63,13 +66,17 @@ function asProfile(value: unknown): Profile | null {
     email: String(row.email ?? ""),
     nickname: String(row.nickname ?? "會員"),
     phone: typeof row.phone === "string" && row.phone ? row.phone : null,
-    city: String(row.city ?? "臺北市"),
+    city: String(row.city ?? "台北市"),
     district: String(row.district ?? "大安區"),
     interests: Array.isArray(row.interests) ? row.interests.map(String) : [],
     role,
     verified: Boolean(row.verified),
     planId: String(row.plan_id ?? row.planId ?? "free"),
     createdAt: String(row.created_at ?? row.createdAt ?? new Date().toISOString()),
+    memberType: row.member_type === "partner" || row.member_type === "enthusiast" ? row.member_type : "public",
+    partnerNumber: typeof row.partner_number === "string" && row.partner_number ? row.partner_number : null,
+    homeBranchId: typeof row.home_branch_id === "string" ? row.home_branch_id : null,
+    managedBranchId: typeof row.managed_branch_id === "string" ? row.managed_branch_id : null,
   };
 }
 
@@ -92,7 +99,15 @@ function listItem(row: ActivityRow, going: number, waiting: number): ActivityLis
     status: row.status,
     organizerName: row.organizer_name,
     organizerVerified: row.organizer_verified,
+    branchId: row.branch_id,
+    branchName: branchById(row.branch_id)?.name ?? null,
+    speaker: row.speaker,
   };
+}
+
+function byBranchThenTime(a: ActivityListItem, b: ActivityListItem) {
+  const rank = (city: string) => (city === "台北市" || city === "新北市" ? 0 : 1);
+  return rank(a.city) - rank(b.city) || a.startsAt.localeCompare(b.startsAt);
 }
 
 async function counts() {
@@ -197,6 +212,9 @@ export const supabaseRepo: Repo = {
           city: parsed.data.city,
           district: parsed.data.district,
           interests: parsed.data.interests,
+          member_type: parsed.data.memberType,
+          partner_number: parsed.data.partnerNumber ?? "",
+          home_branch_id: parsed.data.homeBranchId ?? "",
         },
       },
     });
@@ -239,6 +257,9 @@ export const supabaseRepo: Repo = {
         city: parsed.data.city,
         district: parsed.data.district,
         interests: parsed.data.interests,
+        member_type: parsed.data.memberType,
+        partner_number: parsed.data.partnerNumber,
+        home_branch_id: parsed.data.homeBranchId,
       })
       .eq("id", user.id);
     if (error) return fail(error);
@@ -254,9 +275,12 @@ export const supabaseRepo: Repo = {
       .order("starts_at");
     if (filter?.city) query = query.eq("city", filter.city);
     if (filter?.category) query = query.eq("category", filter.category);
+    if (filter?.branchId) query = query.eq("branch_id", filter.branchId);
     const [{ data, error }, tally] = await Promise.all([query, counts()]);
     if (error) throw new Error(error.message);
-    return ((data ?? []) as ActivityRow[]).map((row) => listItem(row, tally.get(row.id)?.going ?? 0, tally.get(row.id)?.waiting ?? 0));
+    return ((data ?? []) as ActivityRow[])
+      .map((row) => listItem(row, tally.get(row.id)?.going ?? 0, tally.get(row.id)?.waiting ?? 0))
+      .sort(byBranchThenTime);
   },
   async getActivity(id) {
     const supabase = await createClient();
@@ -264,7 +288,8 @@ export const supabaseRepo: Repo = {
     const { data, error } = await supabase.from("activities").select(ACTIVITY_COLUMNS).eq("id", id).maybeSingle();
     if (error || !data) return null;
     const row = data as ActivityRow;
-    if (row.status === "draft" && user?.role !== "admin") return null;
+    const managesDraft = user?.role === "admin" || (user?.role === "branch_manager" && user.managedBranchId === row.branch_id);
+    if (row.status === "draft" && !managesDraft) return null;
     const tally = await counts();
     let myStatus: RsvpStatus | null = null;
     if (user) {
@@ -482,18 +507,23 @@ export const supabaseRepo: Repo = {
     return { ok: true, message: "已收到檢舉，管理員會查看" };
   },
   async adminListActivities() {
-    const gate = await requireAdmin();
-    if (!gate.ok) return [];
+    const user = await currentUser();
+    if (!user || (user.role !== "admin" && user.role !== "branch_manager")) return [];
     const supabase = await createClient();
-    const { data, error } = await supabase.from("activities").select(ACTIVITY_COLUMNS).order("starts_at");
+    let query = supabase.from("activities").select(ACTIVITY_COLUMNS).order("starts_at");
+    if (user.role === "branch_manager") query = query.eq("branch_id", user.managedBranchId ?? "");
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     const tally = await counts();
-    return ((data ?? []) as ActivityRow[]).map((row) => listItem(row, tally.get(row.id)?.going ?? 0, tally.get(row.id)?.waiting ?? 0));
+    return ((data ?? []) as ActivityRow[])
+      .map((row) => listItem(row, tally.get(row.id)?.going ?? 0, tally.get(row.id)?.waiting ?? 0))
+      .sort(byBranchThenTime);
   },
   async adminSaveActivity(input, id) {
-    const gate = await requireAdmin();
-    if (!gate.ok) return gate;
-    const parsed = parseActivity(input);
+    const user = await currentUser();
+    if (!user || (user.role !== "admin" && user.role !== "branch_manager")) return { ok: false, error: "需要管理員權限" };
+    const scoped = user.role === "branch_manager" ? { ...input, branchId: user.managedBranchId ?? "" } : input;
+    const parsed = parseActivity(scoped);
     if (!parsed.ok) return parsed;
     const supabase = await createClient();
     const payload = {
@@ -514,7 +544,9 @@ export const supabaseRepo: Repo = {
       organizer_verified: parsed.data.organizerVerified,
       is_sample: parsed.data.isSample,
       status: parsed.data.status,
-      organizer_id: gate.user.id,
+      organizer_id: user.id,
+      branch_id: parsed.data.branchId,
+      speaker: parsed.data.speaker,
     };
     if (id) {
       const { error } = await supabase.from("activities").update(payload).eq("id", id);
@@ -526,8 +558,8 @@ export const supabaseRepo: Repo = {
     return { ok: true, id: data.id as string, message: "活動已建立" };
   },
   async adminListRsvps(activityId) {
-    const gate = await requireAdmin();
-    if (!gate.ok) return gate;
+    const user = await currentUser();
+    if (!user || (user.role !== "admin" && user.role !== "branch_manager")) return { ok: false, error: "需要管理員權限" };
     const supabase = await createClient();
     const { data, error } = await supabase.rpc("admin_list_rsvps", { p_activity_id: activityId });
     if (error) return fail(error);
@@ -608,11 +640,15 @@ export const supabaseRepo: Repo = {
     if (error) return fail(error);
     return { ok: true, message: verified ? "已標記為已驗證" : "已取消驗證" };
   },
-  async adminSetRole(userId, role) {
+  async adminSetRole(userId, role, managedBranchId) {
     const gate = await requireAdmin();
     if (!gate.ok) return gate;
+    if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位據點管理員負責的據點" };
     const supabase = await createClient();
-    const { error } = await supabase.from("profiles").update({ role }).eq("id", userId);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ role, managed_branch_id: role === "branch_manager" ? managedBranchId : null })
+      .eq("id", userId);
     if (error) return fail(error);
     return { ok: true, message: "角色已更新" };
   },

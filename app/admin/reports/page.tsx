@@ -15,7 +15,7 @@ export default async function AdminReportsPage() {
       <h2 className="text-3xl font-bold">檢舉</h2>
       {reports.length === 0 ? <p>目前沒有檢舉。</p> : null}
       {reports.map((report) => (
-        <article key={report.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+        <article key={report.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
           <p className="font-medium">
             {label[report.status]} · {report.targetType === "post" ? "公告" : "會員"} · {report.reporterNickname}
           </p>

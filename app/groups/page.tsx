@@ -15,9 +15,9 @@ export default async function GroupsPage() {
       {groups.length === 0 ? <p>還沒有社團。</p> : null}
       <div className="grid gap-4">
         {groups.map((group) => (
-          <article key={group.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+          <article key={group.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-[#e7f0ec] px-3 py-1">{group.interest}</span>
+              <span className="rounded-full bg-[#e8f3fb] px-3 py-1">{group.interest}</span>
               {group.city ? <span className="rounded-full bg-[#f6f1e6] px-3 py-1">{group.city}</span> : null}
               {group.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 font-medium">範例資料</span> : null}
             </div>
@@ -30,7 +30,7 @@ export default async function GroupsPage() {
             <p>
               {group.memberCount} 人{group.joined ? " · 您已加入" : ""}
             </p>
-            <Link href={`/groups/${group.id}`} className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#12382c] px-4 text-white">
+            <Link href={`/groups/${group.id}`} className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#88012B] px-4 text-white">
               進入社團
             </Link>
           </article>

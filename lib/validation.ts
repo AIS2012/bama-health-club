@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { branchById } from "@/lib/branches";
 import { CATEGORIES, CITIES, DISTRICTS, INTERESTS } from "@/lib/constants";
 import type {
   ActivityInput,
@@ -11,6 +12,18 @@ import type {
 const citySchema = z.enum(CITIES);
 const interestSchema = z.enum(INTERESTS);
 const categorySchema = z.enum(CATEGORIES);
+const memberTypeSchema = z.enum(["partner", "enthusiast", "public"]);
+
+function districtOk(city: (typeof CITIES)[number], district: string) {
+  const list = DISTRICTS[city];
+  if (!list) return district.trim().length > 0;
+  return list.includes(district);
+}
+
+function optionalBranch(value: string | null) {
+  if (!value) return true;
+  return Boolean(branchById(value));
+}
 
 function phoneSchema() {
   return z
@@ -28,6 +41,9 @@ export function parseSignUp(input: {
   city: string;
   district: string;
   interests: string[];
+  memberType?: string;
+  partnerNumber?: string | null;
+  homeBranchId?: string | null;
 }): { ok: true; data: SignUpInput } | { ok: false; error: string } {
   const schema = z
     .object({
@@ -38,9 +54,23 @@ export function parseSignUp(input: {
       city: citySchema,
       district: z.string().trim().min(1),
       interests: z.array(interestSchema).max(7),
+      memberType: memberTypeSchema.default("public"),
+      partnerNumber: z
+        .union([z.string(), z.null()])
+        .optional()
+        .transform((value) => {
+          const text = (value ?? "").trim();
+          return text === "" ? null : text;
+        })
+        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數，且先標為待公司驗證"),
+      homeBranchId: z
+        .union([z.string(), z.null()])
+        .optional()
+        .transform((value) => (value ? value : null))
+        .refine(optionalBranch, "請選擇據點"),
     })
-    .refine((value) => DISTRICTS[value.city].includes(value.district), {
-      message: "請選擇這個縣市裡的行政區",
+    .refine((value) => districtOk(value.city, value.district), {
+      message: "請選擇或填寫這個縣市裡的行政區",
       path: ["district"],
     });
   const parsed = schema.safeParse(input);
@@ -54,6 +84,9 @@ export function parseProfile(input: {
   city: string;
   district: string;
   interests: string[];
+  memberType?: string;
+  partnerNumber?: string | null;
+  homeBranchId?: string | null;
 }): { ok: true; data: ProfileInput } | { ok: false; error: string } {
   const schema = z
     .object({
@@ -62,9 +95,23 @@ export function parseProfile(input: {
       city: citySchema,
       district: z.string().trim().min(1),
       interests: z.array(interestSchema).max(7),
+      memberType: memberTypeSchema.default("public"),
+      partnerNumber: z
+        .union([z.string(), z.null()])
+        .optional()
+        .transform((value) => {
+          const text = (value ?? "").trim();
+          return text === "" ? null : text;
+        })
+        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數，且先標為待公司驗證"),
+      homeBranchId: z
+        .union([z.string(), z.null()])
+        .optional()
+        .transform((value) => (value ? value : null))
+        .refine(optionalBranch, "請選擇據點"),
     })
-    .refine((value) => DISTRICTS[value.city].includes(value.district), {
-      message: "請選擇這個縣市裡的行政區",
+    .refine((value) => districtOk(value.city, value.district), {
+      message: "請選擇或填寫這個縣市裡的行政區",
     });
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "資料不完整" };
@@ -75,7 +122,7 @@ export function parseActivity(input: ActivityInput): { ok: true; data: ActivityI
   const schema = z
     .object({
       title: z.string().trim().min(2, "請填活動名稱").max(80),
-      kind: z.enum(["exercise", "talk"]),
+      kind: z.enum(["exercise", "talk", "meetup", "expo", "challenge"]),
       category: categorySchema,
       description: z.string().trim().min(10, "請用幾句話說明活動").max(2000),
       startsAt: z.string().datetime(),
@@ -91,9 +138,14 @@ export function parseActivity(input: ActivityInput): { ok: true; data: ActivityI
       organizerVerified: z.boolean(),
       isSample: z.boolean(),
       status: z.enum(["draft", "published", "cancelled"]),
+      branchId: z.string().refine((value) => Boolean(branchById(value)), "請選擇據點"),
+      speaker: z.union([z.string(), z.null()]).transform((value) => {
+        const text = (value ?? "").trim();
+        return text === "" ? null : text.slice(0, 40);
+      }),
     })
     .refine((value) => new Date(value.endsAt) > new Date(value.startsAt), { message: "結束時間要晚於開始時間" })
-    .refine((value) => DISTRICTS[value.city].includes(value.district), { message: "請選擇正確的行政區" });
+    .refine((value) => value.district.trim().length > 0, { message: "請填行政區" });
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "活動資料不完整" };
   return { ok: true, data: parsed.data };

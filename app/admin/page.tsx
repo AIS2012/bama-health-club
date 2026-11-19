@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ActionForm } from "@/components/action-form";
 import { Button } from "@/components/ui/button";
 import { sendRemindersAction } from "@/lib/actions";
@@ -8,6 +9,8 @@ export const metadata = { title: "管理總覽" };
 
 export default async function AdminHomePage() {
   const repo = await getRepo();
+  const user = await repo.getSessionUser();
+  if (user?.role === "branch_manager") redirect("/admin/activities");
   const [activities, groups, challenges, members, reports] = await Promise.all([
     repo.adminListActivities(),
     repo.listGroups(),
@@ -27,13 +30,13 @@ export default async function AdminHomePage() {
           ["會員", memberCount, "/admin/members"],
           ["未處理檢舉", openReports, "/admin/reports"],
         ].map(([label, count, href]) => (
-          <Link key={String(label)} href={String(href)} className="rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+          <Link key={String(label)} href={String(href)} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
             <span className="block text-lg">{label}</span>
             <span className="text-4xl font-bold">{count}</span>
           </Link>
         ))}
       </div>
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <h2 className="text-2xl font-bold">活動提醒信</h2>
         <p>寄給未來 30 小時內已報名的會員。沒有 RESEND_API_KEY 時不會真的寄出。</p>
         <ActionForm action={sendRemindersAction}>

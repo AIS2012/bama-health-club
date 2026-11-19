@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { CITIES, DISTRICTS, INTERESTS } from "@/lib/constants";
+import { BRANCHES } from "@/lib/branches";
+import { CITIES, DISTRICTS, INTERESTS, MEMBER_TYPE_LABEL } from "@/lib/constants";
+import type { MemberType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function MemberFields({
   nickname = "",
   phone = "",
-  city = "臺北市",
+  city = "台北市",
   district = "大安區",
   interests = [],
   includeAccount = false,
+  memberType = "public",
+  partnerNumber = "",
+  homeBranchId = "",
 }: {
   nickname?: string;
   phone?: string;
@@ -19,12 +24,14 @@ export function MemberFields({
   district?: string;
   interests?: string[];
   includeAccount?: boolean;
+  memberType?: MemberType;
+  partnerNumber?: string;
+  homeBranchId?: string;
 }) {
-  const [currentCity, setCurrentCity] = useState<(typeof CITIES)[number]>(
-    city === "新北市" ? "新北市" : "臺北市",
-  );
+  const initialCity = CITIES.includes(city as (typeof CITIES)[number]) ? (city as (typeof CITIES)[number]) : "台北市";
+  const [currentCity, setCurrentCity] = useState<(typeof CITIES)[number]>(initialCity);
   const districts = DISTRICTS[currentCity];
-  const districtValue = districts.includes(district) ? district : districts[0];
+  const districtValue = districts?.includes(district) ? district : (districts?.[0] ?? district);
 
   return (
     <div className="grid gap-4">
@@ -61,11 +68,15 @@ export function MemberFields({
         </div>
         <div className="grid gap-2">
           <Label htmlFor="district">行政區</Label>
-          <select id="district" name="district" key={`${currentCity}-${districtValue}`} className="h-12 rounded-lg border border-input bg-card px-3" defaultValue={districtValue}>
-            {districts.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
+          {districts ? (
+            <select id="district" name="district" key={`${currentCity}-${districtValue}`} className="h-12 rounded-lg border border-input bg-card px-3" defaultValue={districtValue}>
+              {districts.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          ) : (
+            <Input id="district" name="district" key={currentCity} defaultValue={districtValue || ""} required placeholder="例如 北區" />
+          )}
         </div>
       </div>
       <fieldset className="grid gap-2">
@@ -78,13 +89,40 @@ export function MemberFields({
                 name="interests"
                 value={interest}
                 defaultChecked={interests.includes(interest)}
-                className="size-6 accent-[#12382c]"
+                className="size-6 accent-[#88012B]"
               />
               {interest}
             </label>
           ))}
         </div>
       </fieldset>
+      <div className="grid gap-2">
+        <Label htmlFor="member_type">我是</Label>
+        <select id="member_type" name="member_type" defaultValue={memberType} className="h-12 rounded-lg border border-input bg-card px-3">
+          {(Object.keys(MEMBER_TYPE_LABEL) as MemberType[]).map((key) => (
+            <option key={key} value={key}>
+              {MEMBER_TYPE_LABEL[key]}
+            </option>
+          ))}
+        </select>
+        <p className="text-base text-muted-foreground">一般大眾也能報名活動與挑戰。夥伴與愛用者是公司既有身分，這裡只作自我註記。</p>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="partner_number">夥伴／會員編號（選填）</Label>
+        <Input id="partner_number" name="partner_number" defaultValue={partnerNumber} maxLength={30} placeholder="若有編號可填，不會在這裡核對" />
+        <p className="text-base text-muted-foreground">編號一律顯示為待公司驗證。本站沒有對接公司系統，不會自行判斷真偽。</p>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="home_branch_id">常去據點（選填）</Label>
+        <select id="home_branch_id" name="home_branch_id" defaultValue={homeBranchId} className="h-12 rounded-lg border border-input bg-card px-3">
+          <option value="">尚未選擇</option>
+          {BRANCHES.map((branch) => (
+            <option key={branch.id} value={branch.id}>
+              {branch.shortName} · {branch.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="grid gap-2">
         <Label htmlFor="phone">電話（選填）</Label>
         <Input id="phone" name="phone" type="tel" defaultValue={phone ?? ""} autoComplete="tel" placeholder="只有俱樂部聯絡時才使用" />

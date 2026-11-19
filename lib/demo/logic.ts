@@ -1,3 +1,4 @@
+import { branchById } from "@/lib/branches";
 import { DEMO_PASSWORD } from "@/lib/constants";
 import { addMinutes, atTaipei, startOfTodayTaipeiIso, todayTaipei } from "@/lib/format";
 import { hashPassword, randomToken, verifyPassword } from "@/lib/password";
@@ -69,7 +70,7 @@ export type DemoDb = {
   }[];
 };
 
-const SAMPLE_CONTACT = "02-7711-2012（範例電話，請勿撥打）";
+const SAMPLE_CONTACT = "(02)7733-0800（GSC 全球客服中心；範例場次請仍向現場主辦確認）";
 
 function publicUser(user: UserRecord): Profile {
   const { passwordHash, ...profile } = user;
@@ -104,6 +105,9 @@ function toListItem(db: DemoDb, activity: ActivityDetail): ActivityListItem {
     status: activity.status,
     organizerName: activity.organizerName,
     organizerVerified: activity.organizerVerified,
+    branchId: activity.branchId,
+    branchName: branchById(activity.branchId)?.name ?? null,
+    speaker: activity.speaker,
   };
 }
 
@@ -124,13 +128,17 @@ export function createSeedDb(now = new Date()): DemoDb {
       id: "user-admin",
       email: "admin@bama.example",
       nickname: "林志工",
-      phone: "02-7711-2012",
-      city: "臺北市",
+      phone: null,
+      city: "台北市",
       district: "中正區",
       interests: ["講座", "健走"],
       role: "admin",
       verified: true,
       planId: "free",
+      memberType: "partner",
+      partnerNumber: null,
+      homeBranchId: "taipei",
+      managedBranchId: null,
       createdAt,
       passwordHash,
     },
@@ -139,12 +147,16 @@ export function createSeedDb(now = new Date()): DemoDb {
       email: "member@bama.example",
       nickname: "陳阿姨",
       phone: null,
-      city: "臺北市",
+      city: "台北市",
       district: "大安區",
       interests: ["健走", "瑜珈"],
       role: "member",
       verified: false,
       planId: "free",
+      memberType: "enthusiast",
+      partnerNumber: "A123456",
+      homeBranchId: "taipei",
+      managedBranchId: null,
       createdAt,
       passwordHash,
     },
@@ -153,30 +165,61 @@ export function createSeedDb(now = new Date()): DemoDb {
       email: "sample@bama.example",
       nickname: "王伯伯",
       phone: null,
-      city: "臺北市",
+      city: "台北市",
       district: "信義區",
       interests: ["太極"],
       role: "member",
       verified: true,
       planId: "free",
+      memberType: "public",
+      partnerNumber: null,
+      homeBranchId: null,
+      managedBranchId: null,
+      createdAt,
+      passwordHash,
+    },
+    {
+      id: "user-branch",
+      email: "branch@bama.example",
+      nickname: "林據點",
+      phone: null,
+      city: "台北市",
+      district: "中正區",
+      interests: ["講座"],
+      role: "branch_manager",
+      verified: true,
+      planId: "free",
+      memberType: "partner",
+      partnerNumber: null,
+      homeBranchId: "taipei",
+      managedBranchId: "taipei",
       createdAt,
       passwordHash,
     },
   ];
 
   const makeActivity = (
-    partial: Omit<ActivityDetail, "goingCount" | "waitlistCount" | "myStatus" | "organizerContact" | "endsAt"> & {
+    partial: Omit<ActivityDetail, "goingCount" | "waitlistCount" | "myStatus" | "organizerContact" | "endsAt" | "branchName" | "branchId" | "speaker"> & {
       minutes: number;
       contact?: string;
+      branchId?: string;
+      speaker?: string | null;
     },
-  ): ActivityDetail => ({
-    ...partial,
-    endsAt: addMinutes(partial.startsAt, partial.minutes),
-    organizerContact: partial.contact ?? SAMPLE_CONTACT,
-    goingCount: 0,
-    waitlistCount: 0,
-    myStatus: null,
-  });
+  ): ActivityDetail => {
+    const branchId = partial.branchId ?? "taipei";
+    return {
+      ...partial,
+      branchId,
+      branchName: branchById(branchId)?.name ?? null,
+      speaker: partial.speaker ?? null,
+      city: partial.city.replaceAll("臺", "台"),
+      endsAt: addMinutes(partial.startsAt, partial.minutes),
+      organizerContact: partial.contact ?? SAMPLE_CONTACT,
+      goingCount: 0,
+      waitlistCount: 0,
+      myStatus: null,
+    };
+  };
 
   const activities: ActivityDetail[] = [
     makeActivity({
@@ -243,8 +286,9 @@ export function createSeedDb(now = new Date()): DemoDb {
       id: "act-zhongzheng",
       title: "熟齡防詐與社區健康講座",
       kind: "talk",
-      category: "講座",
-      description: "【範例活動】聊聊常見詐騙話術，以及怎麼跟社區活動安全相處。講師不提供個人理財建議，也不診斷疾病。",
+      category: "健康講座",
+      speaker: "志工講師（範例，非產品說明）",
+      description: "【範例活動】聊聊常見詐騙話術，以及怎麼一起運動、預防跌倒。不談產品效果，也不診斷疾病。",
       startsAt: atTaipei(5, 14, 0, now),
       minutes: 120,
       locationName: "紀州庵文學森林",
@@ -299,6 +343,69 @@ export function createSeedDb(now = new Date()): DemoDb {
       isSample: true,
       status: "published",
     }),
+    makeActivity({
+      id: "act-taichung",
+      title: "台中據點週會（範例）",
+      kind: "meetup",
+      category: "據點聚會",
+      branchId: "taichung",
+      description: "【範例活動】在台中據點碰面，一起走走、交流本週講座時間。不是產品說明會，也不保證任何效果。",
+      startsAt: atTaipei(7, 10, 0, now),
+      minutes: 90,
+      locationName: "台中中清營運中心",
+      address: "404 台中市北區中清路一段581號",
+      city: "台中市",
+      district: "北區",
+      capacity: 30,
+      difficulty: "easy",
+      organizerId: "user-admin",
+      organizerName: "林志工",
+      organizerVerified: true,
+      isSample: true,
+      status: "published",
+    }),
+    makeActivity({
+      id: "act-kaohsiung",
+      title: "高雄樂齡交流日（範例）",
+      kind: "expo",
+      category: "樂齡／博覽會",
+      branchId: "kaohsiung",
+      description: "【範例活動】樂齡朋友的交流日，可認識據點與俱樂部活動。沒有療效展示，也不推銷療程。",
+      startsAt: atTaipei(8, 13, 30, now),
+      minutes: 180,
+      locationName: "高雄營運中心",
+      address: "803009 高雄市前金區五福三路21號3樓",
+      city: "高雄市",
+      district: "前金區",
+      capacity: 80,
+      difficulty: "easy",
+      organizerId: "user-admin",
+      organizerName: "林志工",
+      organizerVerified: true,
+      isSample: true,
+      status: "published",
+    }),
+    makeActivity({
+      id: "act-taoyuan-21",
+      title: "桃園 21 日一起動起來（範例）",
+      kind: "challenge",
+      category: "21日挑戰",
+      branchId: "taoyuan",
+      description: "【範例活動】說明如何參加 21 天自己打卡的小挑戰。不紀錄飲食或產品使用，也不上傳健檢。",
+      startsAt: atTaipei(4, 15, 0, now),
+      minutes: 60,
+      locationName: "桃園分公司",
+      address: "330 桃園市桃園區成功路一段37號1樓",
+      city: "桃園市",
+      district: "桃園區",
+      capacity: 25,
+      difficulty: "easy",
+      organizerId: "user-admin",
+      organizerName: "林志工",
+      organizerVerified: true,
+      isSample: true,
+      status: "published",
+    }),
   ];
 
   return {
@@ -337,7 +444,7 @@ export function createSeedDb(now = new Date()): DemoDb {
       {
         id: "grp-talk",
         name: "熟齡講座交流",
-        description: "【範例社團】分享大臺北公開講座與防詐資訊。請不要張貼轉帳帳號或來路不明連結。",
+        description: "【範例社團】分享公開講座與防詐資訊。請不要張貼轉帳帳號或來路不明連結。",
         interest: "講座",
         city: null,
         isSample: true,
@@ -437,6 +544,10 @@ export function signup(db: DemoDb, raw: SignUpInput, now = new Date()): Result &
     role: "member",
     verified: false,
     planId: "free",
+    memberType: parsed.data.memberType,
+    partnerNumber: parsed.data.partnerNumber,
+    homeBranchId: parsed.data.homeBranchId,
+    managedBranchId: null,
     createdAt: now.toISOString(),
     passwordHash: hashPassword(parsed.data.password),
   };
@@ -485,6 +596,9 @@ export function updateProfile(db: DemoDb, actor: Profile | null, raw: ProfileInp
   record.city = parsed.data.city;
   record.district = parsed.data.district;
   record.interests = parsed.data.interests;
+  record.memberType = parsed.data.memberType;
+  record.partnerNumber = parsed.data.partnerNumber;
+  record.homeBranchId = parsed.data.homeBranchId;
   db.posts.forEach((post) => {
     if (post.authorId === record.id) {
       post.authorName = record.nickname;
@@ -494,20 +608,27 @@ export function updateProfile(db: DemoDb, actor: Profile | null, raw: ProfileInp
   return { ok: true, message: "資料已更新" };
 }
 
-export function listActivities(db: DemoDb, filter?: { city?: string; category?: string }, now = new Date()) {
+function activityOrder(a: { city: string; startsAt: string }, b: { city: string; startsAt: string }) {
+  const rank = (city: string) => (city === "台北市" || city === "新北市" ? 0 : 1);
+  return rank(a.city) - rank(b.city) || a.startsAt.localeCompare(b.startsAt);
+}
+
+export function listActivities(db: DemoDb, filter?: { city?: string; category?: string; branchId?: string }, now = new Date()) {
   const start = startOfTodayTaipeiIso(now);
   return db.activities
     .filter((activity) => activity.status === "published" && activity.endsAt >= start)
     .filter((activity) => (filter?.city ? activity.city === filter.city : true))
     .filter((activity) => (filter?.category ? activity.category === filter.category : true))
+    .filter((activity) => (filter?.branchId ? activity.branchId === filter.branchId : true))
     .map((activity) => toListItem(db, activity))
-    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+    .sort(activityOrder);
 }
 
 export function getActivity(db: DemoDb, id: string, actor: Profile | null): ActivityDetail | null {
   const activity = db.activities.find((item) => item.id === id);
   if (!activity) return null;
-  if (activity.status === "draft" && actor?.role !== "admin") return null;
+  const managesDraft = actor?.role === "admin" || (actor?.role === "branch_manager" && actor.managedBranchId === activity.branchId);
+  if (activity.status === "draft" && !managesDraft) return null;
   const mine = actor
     ? db.rsvps.find((item) => item.activityId === id && item.userId === actor.id && item.status !== "cancelled")
     : undefined;
@@ -734,26 +855,43 @@ function requireAdmin(actor: Profile | null): Result | Profile {
   return user;
 }
 
-export function adminListActivities(db: DemoDb) {
-  return db.activities.map((activity) => toListItem(db, activity)).sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+function canManageBranch(actor: Profile, branchId: string | null) {
+  if (actor.role === "admin") return true;
+  return actor.role === "branch_manager" && Boolean(branchId) && actor.managedBranchId === branchId;
+}
+
+export function adminListActivities(db: DemoDb, actor: Profile | null) {
+  if (!actor || (actor.role !== "admin" && actor.role !== "branch_manager")) return [];
+  return db.activities
+    .filter((activity) => canManageBranch(actor, activity.branchId))
+    .map((activity) => toListItem(db, activity))
+    .sort(activityOrder);
 }
 
 export function adminSaveActivity(db: DemoDb, actor: Profile | null, input: ActivityInput, id?: string): Result {
-  const admin = requireAdmin(actor);
-  if (!isProfile(admin)) return admin;
-  const parsed = parseActivity(input);
+  const user = requireUser(actor);
+  if (!isProfile(user)) return user;
+  if (user.role !== "admin" && user.role !== "branch_manager") return { ok: false, error: "需要管理員權限" };
+  const scoped = user.role === "branch_manager" ? { ...input, branchId: user.managedBranchId ?? "" } : input;
+  if (user.role === "branch_manager" && id) {
+    const existing = db.activities.find((item) => item.id === id);
+    if (!existing || existing.branchId !== user.managedBranchId) return { ok: false, error: "只能管理自己據點的活動" };
+  }
+  const parsed = parseActivity(scoped);
   if (!parsed.ok) return parsed;
+  if (!canManageBranch(user, parsed.data.branchId)) return { ok: false, error: "只能管理自己據點的活動" };
   if (id) {
     const activity = db.activities.find((item) => item.id === id);
     if (!activity) return { ok: false, error: "找不到活動" };
-    Object.assign(activity, parsed.data, { organizerId: activity.organizerId ?? admin.id });
+    Object.assign(activity, parsed.data, { organizerId: activity.organizerId ?? user.id, branchName: branchById(parsed.data.branchId)?.name ?? null });
     return { ok: true, id, message: "活動已更新" };
   }
   const newId = randomToken().slice(0, 16);
   db.activities.push({
     ...parsed.data,
     id: newId,
-    organizerId: admin.id,
+    organizerId: user.id,
+    branchName: branchById(parsed.data.branchId)?.name ?? null,
     goingCount: 0,
     waitlistCount: 0,
     myStatus: null,
@@ -762,8 +900,10 @@ export function adminSaveActivity(db: DemoDb, actor: Profile | null, input: Acti
 }
 
 export function adminListRsvps(db: DemoDb, actor: Profile | null, activityId: string): RsvpRow[] | Result {
-  const admin = requireAdmin(actor);
-  if (!isProfile(admin)) return admin;
+  const user = requireUser(actor);
+  if (!isProfile(user)) return user;
+  const activity = db.activities.find((item) => item.id === activityId);
+  if (!activity || !canManageBranch(user, activity.branchId)) return { ok: false, error: "只能查看自己據點的報名" };
   return db.rsvps
     .filter((item) => item.activityId === activityId)
     .map((item) => {
@@ -837,7 +977,13 @@ export function adminSetVerified(db: DemoDb, actor: Profile | null, userId: stri
   return { ok: true, message: verified ? "已標記為已驗證" : "已取消驗證" };
 }
 
-export function adminSetRole(db: DemoDb, actor: Profile | null, userId: string, role: Profile["role"]): Result {
+export function adminSetRole(
+  db: DemoDb,
+  actor: Profile | null,
+  userId: string,
+  role: Profile["role"],
+  managedBranchId: string | null,
+): Result {
   const admin = requireAdmin(actor);
   if (!isProfile(admin)) return admin;
   const user = db.users.find((item) => item.id === userId);
@@ -846,7 +992,9 @@ export function adminSetRole(db: DemoDb, actor: Profile | null, userId: string, 
     const otherAdmins = db.users.filter((item) => item.role === "admin" && item.id !== user.id).length;
     if (otherAdmins === 0) return { ok: false, error: "至少需要一位管理員" };
   }
+  if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位據點管理員負責的據點" };
   user.role = role;
+  user.managedBranchId = role === "branch_manager" ? managedBranchId : null;
   return { ok: true, message: "角色已更新" };
 }
 

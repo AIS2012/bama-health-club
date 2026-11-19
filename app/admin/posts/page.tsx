@@ -13,7 +13,7 @@ export default async function AdminPostsPage() {
       <h2 className="text-3xl font-bold">公告</h2>
       {posts.length === 0 ? <p>還沒有公告。</p> : null}
       {posts.map((post) => (
-        <article key={post.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+        <article key={post.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
           <p className="font-medium">{post.status === "hidden" ? "已隱藏" : "顯示中"} · {post.authorName}</p>
           <p className="whitespace-pre-wrap">{post.body}</p>
           <ActionForm action={setPostStatusAction}>

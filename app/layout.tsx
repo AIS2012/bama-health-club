@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     default: "八馬健康俱樂部",
     template: "%s｜八馬健康俱樂部",
   },
-  description: "給大臺北熟齡與退休朋友的運動聚會、健康講座、社團與小挑戰。目前入會免費，不是醫療服務。",
+  description: "Total Swiss 八馬國際事業的八馬健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#12382c",
+  themeColor: "#88012B",
   width: "device-width",
   initialScale: 1,
 };

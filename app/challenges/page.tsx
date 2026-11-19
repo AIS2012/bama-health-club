@@ -17,9 +17,9 @@ export default async function ChallengesPage() {
         {challenges.map((challenge) => {
           const ratio = Math.min(challenge.checkinCount / challenge.durationDays, 1);
           return (
-            <article key={challenge.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+            <article key={challenge.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#e7f0ec] px-3 py-1">{challenge.category}</span>
+                <span className="rounded-full bg-[#e8f3fb] px-3 py-1">{challenge.category}</span>
                 {challenge.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 font-medium">範例資料</span> : null}
               </div>
               <h2 className="text-2xl font-bold">
@@ -34,14 +34,14 @@ export default async function ChallengesPage() {
                     已打卡 {challenge.checkinCount} / {challenge.durationDays} 天
                     {challenge.checkedInToday ? " · 今天已完成" : ""}
                   </p>
-                  <div className="h-4 overflow-hidden rounded-full bg-[#e7f0ec]" aria-hidden>
-                    <div className="h-full bg-[#12382c]" style={{ width: `${ratio * 100}%` }} />
+                  <div className="h-4 overflow-hidden rounded-full bg-[#e8f3fb]" aria-hidden>
+                    <div className="h-full bg-[#88012B]" style={{ width: `${ratio * 100}%` }} />
                   </div>
                 </div>
               ) : (
                 <p>共 {challenge.durationDays} 天</p>
               )}
-              <Link href={`/challenges/${challenge.id}`} className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#12382c] px-4 text-white">
+              <Link href={`/challenges/${challenge.id}`} className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#88012B] px-4 text-white">
                 查看挑戰
               </Link>
             </article>

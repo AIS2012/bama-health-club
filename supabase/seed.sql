@@ -164,7 +164,7 @@ values
 (
   'b1000000-0000-4000-8000-000000000003',
   '熟齡講座交流',
-  '【範例社團】分享大臺北公開講座與防詐資訊。請不要張貼轉帳帳號或來路不明連結。',
+  '【範例社團】分享公開講座與防詐資訊。請不要張貼轉帳帳號或來路不明連結。',
   '講座', null, true,
   (select id from public.profiles where email = 'admin@bama.example')
 )
@@ -211,3 +211,76 @@ select 'a1000000-0000-4000-8000-000000000006', id, 'going', true
 from public.profiles
 where email = 'sample@bama.example'
 on conflict (activity_id, user_id) do nothing;
+
+insert into public.branches (id, name, short_name, county, address, email, sort_order, hours_note)
+values
+('taipei', '台北營運中心', '台北', '台北市', '10044 台北市中正區重慶南路一段10號2樓', 'tp@tsmail.com.tw', 1, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('taoyuan', '桃園分公司', '桃園', '桃園市', '330 桃園市桃園區成功路一段37號1樓', 'ty@tsmail.com.tw', 2, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('zhongli', '中壢分公司', '中壢', '桃園市', '桃園市中壢區慈惠三街99號', 'cl@tsmail.com.tw', 3, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('hsinchu', '新竹營運中心', '新竹', '新竹縣', '30251 新竹縣竹北市縣政九路169號2樓', 'hc@tsmail.com.tw', 4, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('miaoli', '苗栗營運中心', '苗栗', '苗栗縣', '36043 苗栗市中山路331號2F', 'ml@tsmail.com.tw', 5, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('taichung', '台中中清營運中心', '台中', '台中市', '404 台中市北區中清路一段581號', 'tc@tsmail.com.tw', 6, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('yuanlin', '員林營運中心', '員林', '彰化縣', '51055 彰化縣員林市中山路二段480號', 'ch@tsmail.com.tw', 7, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('caotun', '草屯營運中心', '草屯', '南投縣', '54263 南投縣草屯鎮太平路二段70號1樓', 'ct@tsmail.com.tw', 8, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('chiayi', '嘉義營運中心', '嘉義', '嘉義市', '60090 嘉義市西區友忠路301號', 'cy@tsmail.com.tw', 9, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('tainan', '台南營運中心', '台南', '台南市', '701 台南市東區崇明路708號1樓', 'tn@tsmail.com.tw', 10, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('kaohsiung', '高雄營運中心', '高雄', '高雄市', '803009 高雄市前金區五福三路21號3樓', 'ks@tsmail.com.tw', 11, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('pingtung', '屏東營運中心', '屏東', '屏東縣', '90011 屏東市公勇路79-2號2樓', 'pd@tsmail.com.tw', 12, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('taitung', '台東營運中心', '台東', '台東縣', '95052 台東縣台東市長安街258號', 'tt@tsmail.com.tw', 13, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('hualien', '花蓮營運中心', '花蓮', '花蓮縣', '97055 花蓮市國聯一路171號1樓', 'hl@tsmail.com.tw', 14, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('yilan', '宜蘭營運中心', '宜蘭', '宜蘭縣', '26041 宜蘭市宜興路一段285號1樓', 'yl@tsmail.com.tw', 15, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。'),
+('kinmen', '金門營運中心', '金門', '金門縣', '89347 金門縣金城鎮民族路286號', 'km@tsmail.com.tw', 16, '營業時間官網尚未載明，請先電詢 GSC 全球客服中心 (02)7733-0800。')
+on conflict (id) do nothing;
+
+update public.activities
+set branch_id = 'taipei', city = '台北市'
+where id in (
+  'a1000000-0000-4000-8000-000000000001',
+  'a1000000-0000-4000-8000-000000000003',
+  'a1000000-0000-4000-8000-000000000004',
+  'a1000000-0000-4000-8000-000000000006'
+);
+
+update public.activities
+set category = '健康講座', speaker = '志工講師（範例，非產品說明）'
+where id = 'a1000000-0000-4000-8000-000000000004';
+
+insert into public.activities (
+  id, title, kind, category, description, starts_at, ends_at, location_name, address,
+  city, district, capacity, difficulty, organizer_name, organizer_contact,
+  organizer_verified, is_sample, status, branch_id, speaker
+) values
+(
+  'a1000000-0000-4000-8000-000000000007',
+  '台中據點週會（範例）', 'meetup', '據點聚會',
+  '【範例活動】在台中據點碰面，一起走走、交流本週講座時間。不是產品說明會，也不保證任何效果。',
+  now() + interval '7 days' + interval '10 hours',
+  now() + interval '7 days' + interval '11 hours 30 minutes',
+  '台中中清營運中心', '404 台中市北區中清路一段581號',
+  '台中市', '北區', 30, 'easy',
+  '林志工', '(02)7733-0800（GSC 全球客服中心；範例場次請仍向現場主辦確認）',
+  true, true, 'published', 'taichung', null
+),
+(
+  'a1000000-0000-4000-8000-000000000008',
+  '高雄樂齡交流日（範例）', 'expo', '樂齡／博覽會',
+  '【範例活動】樂齡朋友的交流日，可認識據點與俱樂部活動。沒有療效展示，也不推銷療程。',
+  now() + interval '8 days' + interval '13 hours 30 minutes',
+  now() + interval '8 days' + interval '16 hours 30 minutes',
+  '高雄營運中心', '803009 高雄市前金區五福三路21號3樓',
+  '高雄市', '前金區', 80, 'easy',
+  '林志工', '(02)7733-0800（GSC 全球客服中心；範例場次請仍向現場主辦確認）',
+  true, true, 'published', 'kaohsiung', null
+),
+(
+  'a1000000-0000-4000-8000-000000000009',
+  '桃園 21 日一起動起來（範例）', 'challenge', '21日挑戰',
+  '【範例活動】說明如何參加 21 天自己打卡的小挑戰。不紀錄飲食或產品使用，也不上傳健檢。',
+  now() + interval '4 days' + interval '15 hours',
+  now() + interval '4 days' + interval '16 hours',
+  '桃園分公司', '330 桃園市桃園區成功路一段37號1樓',
+  '桃園市', '桃園區', 25, 'easy',
+  '林志工', '(02)7733-0800（GSC 全球客服中心；範例場次請仍向現場主辦確認）',
+  true, true, 'published', 'taoyuan', null
+)
+on conflict (id) do nothing;

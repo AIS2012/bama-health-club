@@ -228,8 +228,7 @@ export const demoRepo: Repo = {
   },
   async adminListActivities() {
     const current = await actor();
-    if (current?.role !== "admin") return [];
-    return updateDb((db) => adminListActivities(db));
+    return updateDb((db) => adminListActivities(db, current));
   },
   async adminSaveActivity(input, id) {
     const current = await actor();
@@ -255,9 +254,9 @@ export const demoRepo: Repo = {
     const current = await actor();
     return updateDb((db) => adminSetVerified(db, current, userId, verified));
   },
-  async adminSetRole(userId, role) {
+  async adminSetRole(userId, role, managedBranchId) {
     const current = await actor();
-    return updateDb((db) => adminSetRole(db, current, userId, role));
+    return updateDb((db) => adminSetRole(db, current, userId, role, managedBranchId));
   },
   async adminListPosts() {
     const current = await actor();

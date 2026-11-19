@@ -22,7 +22,7 @@ export default async function SignUpPage({ searchParams }: { searchParams: Promi
           </Link>
         </p>
       </div>
-      <ActionForm action={signUpAction} className="rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+      <ActionForm action={signUpAction} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
         <input type="hidden" name="next" value={next} />
         <MemberFields includeAccount />
         <Button type="submit">建立免費會員</Button>

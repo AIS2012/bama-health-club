@@ -32,20 +32,20 @@ export default async function ChallengePage({ params }: { params: Promise<{ id: 
       <p className="text-lg">{challenge.description}</p>
       <p>{MEDICAL_DISCLAIMER}</p>
       {challenge.joined ? (
-        <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+        <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
           <h2 className="text-2xl font-bold">我的進度</h2>
           <p className="text-xl">
             {challenge.checkinCount} / {challenge.durationDays} 天
           </p>
           <div
-            className="h-5 overflow-hidden rounded-full bg-[#e7f0ec]"
+            className="h-5 overflow-hidden rounded-full bg-[#e8f3fb]"
             role="meter"
             aria-valuemin={0}
             aria-valuemax={challenge.durationDays}
             aria-valuenow={challenge.checkinCount}
             aria-label="打卡進度"
           >
-            <div className="h-full bg-[#12382c]" style={{ width: `${ratio * 100}%` }} />
+            <div className="h-full bg-[#88012B]" style={{ width: `${ratio * 100}%` }} />
           </div>
           <ActionForm action={checkInAction}>
             <input type="hidden" name="challenge_id" value={challenge.id} />

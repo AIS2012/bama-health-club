@@ -26,7 +26,7 @@ export type Repo = {
   consumeMagicLink(token: string): Promise<Result>;
   signOut(): Promise<void>;
   updateProfile(input: ProfileInput): Promise<Result>;
-  listActivities(filter?: { city?: string; category?: string }): Promise<ActivityListItem[]>;
+  listActivities(filter?: { city?: string; category?: string; branchId?: string }): Promise<ActivityListItem[]>;
   getActivity(id: string): Promise<ActivityDetail | null>;
   rsvp(activityId: string, safetyDeclared: boolean): Promise<Result>;
   cancelRsvp(activityId: string): Promise<Result>;
@@ -47,7 +47,7 @@ export type Repo = {
   adminSaveChallenge(input: ChallengeInput, id?: string): Promise<Result>;
   adminListMembers(): Promise<Profile[] | Result>;
   adminSetVerified(userId: string, verified: boolean): Promise<Result>;
-  adminSetRole(userId: string, role: Profile["role"]): Promise<Result>;
+  adminSetRole(userId: string, role: Profile["role"], managedBranchId: string | null): Promise<Result>;
   adminListPosts(): Promise<PostItem[] | Result>;
   adminSetPostStatus(postId: string, status: "visible" | "hidden"): Promise<Result>;
   adminListReports(): Promise<AdminReport[] | Result>;

@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { saveActivityAction } from "@/lib/actions";
-import { CATEGORIES, CITIES, DISTRICTS } from "@/lib/constants";
+import { BRANCHES } from "@/lib/branches";
+import { CATEGORIES, CITIES } from "@/lib/constants";
 import { isoToTaipeiInput } from "@/lib/format";
 import type { ActivityDetail } from "@/lib/types";
 
 export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
-  const city = activity?.city ?? "臺北市";
-  const districts = DISTRICTS[city as keyof typeof DISTRICTS] ?? DISTRICTS["臺北市"];
+  const city = activity?.city ?? "台北市";
   return (
-    <ActionForm action={saveActivityAction} className="rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+    <ActionForm action={saveActivityAction} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
       <input type="hidden" name="id" value={activity?.id ?? ""} />
       <label className="grid gap-2">
         名稱
@@ -21,8 +21,11 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
         <label className="grid gap-2">
           種類
           <select name="kind" defaultValue={activity?.kind ?? "exercise"} className="h-12 rounded-lg border bg-card px-3">
-            <option value="exercise">運動聚會</option>
+            <option value="exercise">一起運動</option>
             <option value="talk">健康講座</option>
+            <option value="meetup">據點聚會</option>
+            <option value="expo">樂齡／博覽會</option>
+            <option value="challenge">21日挑戰</option>
           </select>
         </label>
         <label className="grid gap-2">
@@ -49,6 +52,20 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
         </label>
       </div>
       <label className="grid gap-2">
+        據點
+        <select name="branch_id" defaultValue={activity?.branchId ?? "taipei"} className="h-12 rounded-lg border bg-card px-3" required>
+          {BRANCHES.map((branch) => (
+            <option key={branch.id} value={branch.id}>
+              {branch.shortName} · {branch.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="grid gap-2">
+        講者（講座可填，選填）
+        <Input name="speaker" defaultValue={activity?.speaker ?? ""} />
+      </label>
+      <label className="grid gap-2">
         地點名稱
         <Input name="location_name" required defaultValue={activity?.locationName ?? ""} />
       </label>
@@ -67,11 +84,7 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
         </label>
         <label className="grid gap-2">
           行政區
-          <select name="district" defaultValue={activity?.district ?? districts[0]} className="h-12 rounded-lg border bg-card px-3">
-            {[...DISTRICTS["臺北市"], ...DISTRICTS["新北市"]].map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
+          <Input name="district" required defaultValue={activity?.district ?? "中正區"} />
         </label>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

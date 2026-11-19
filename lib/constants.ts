@@ -1,7 +1,24 @@
-export const CITIES = ["臺北市", "新北市"] as const;
+export const CITIES = [
+  "台北市",
+  "新北市",
+  "桃園市",
+  "新竹縣",
+  "苗栗縣",
+  "台中市",
+  "彰化縣",
+  "南投縣",
+  "嘉義市",
+  "台南市",
+  "高雄市",
+  "屏東縣",
+  "台東縣",
+  "花蓮縣",
+  "宜蘭縣",
+  "金門縣",
+] as const;
 
-export const DISTRICTS: Record<(typeof CITIES)[number], string[]> = {
-  臺北市: [
+export const DISTRICTS: Partial<Record<(typeof CITIES)[number], string[]>> = {
+  台北市: [
     "中正區",
     "大同區",
     "中山區",
@@ -50,7 +67,7 @@ export const DISTRICTS: Record<(typeof CITIES)[number], string[]> = {
 
 export const INTERESTS = ["健走", "瑜珈", "太極", "講座", "伸展", "舞蹈", "養生操"] as const;
 
-export const CATEGORIES = ["健走", "瑜珈", "太極", "講座", "伸展", "舞蹈"] as const;
+export const CATEGORIES = ["健走", "瑜珈", "太極", "健康講座", "講座", "據點聚會", "樂齡／博覽會", "21日挑戰", "伸展", "舞蹈"] as const;
 
 export const DIFFICULTY_LABEL = {
   easy: "輕鬆",
@@ -59,15 +76,32 @@ export const DIFFICULTY_LABEL = {
 } as const;
 
 export const KIND_LABEL = {
-  exercise: "運動聚會",
+  exercise: "一起運動",
   talk: "健康講座",
+  meetup: "據點聚會",
+  expo: "樂齡／博覽會",
+  challenge: "21日挑戰",
 } as const;
 
 export const ROLE_LABEL = {
   member: "會員",
   organizer: "主辦",
   admin: "管理員",
+  branch_manager: "據點管理員",
 } as const;
+
+export const MEMBER_TYPE_LABEL = {
+  partner: "夥伴",
+  enthusiast: "愛用者",
+  public: "一般大眾",
+} as const;
+
+export const JOIN_BUSINESS_URL = "https://www.totalswiss.com.tw/join";
+export const OFFICIAL_SITE_URL = "https://www.totalswiss.com.tw/";
+export const MEMBER_PORTAL_URL = "https://mbst.totalswiss.com/mblogin.php";
+export const GSC_PHONE = "(02)7733-0800";
+export const JOIN_BUSINESS_NOTE =
+  "「加入事業」是 Total Swiss 八馬國際事業的多層次傳銷事業機會，不是求職或雇用。加入需要推薦人，並經公司審核同意。俱樂部入會本身免費，與加入事業是兩件事。";
 
 export const SAFETY_NOTICE =
   "參加運動前，請確認自己今日身體狀況適合活動。若感到頭暈、胸悶、疼痛或不適，請立即停止並尋求專業協助。八馬健康俱樂部不提供醫療服務，活動內容不是診斷、治療或復健課程。";

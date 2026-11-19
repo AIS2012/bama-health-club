@@ -1,5 +1,6 @@
-export type Role = "member" | "organizer" | "admin";
-export type ActivityKind = "exercise" | "talk";
+export type Role = "member" | "organizer" | "admin" | "branch_manager";
+export type MemberType = "partner" | "enthusiast" | "public";
+export type ActivityKind = "exercise" | "talk" | "meetup" | "expo" | "challenge";
 export type Difficulty = "easy" | "moderate" | "challenging";
 export type ActivityStatus = "draft" | "published" | "cancelled";
 export type RsvpStatus = "going" | "waitlist" | "cancelled";
@@ -19,6 +20,10 @@ export type Profile = {
   verified: boolean;
   planId: string;
   createdAt: string;
+  memberType: MemberType;
+  partnerNumber: string | null;
+  homeBranchId: string | null;
+  managedBranchId: string | null;
 };
 
 export type ActivityListItem = {
@@ -39,6 +44,9 @@ export type ActivityListItem = {
   status: ActivityStatus;
   organizerName: string;
   organizerVerified: boolean;
+  branchId: string | null;
+  branchName: string | null;
+  speaker: string | null;
 };
 
 export type ActivityDetail = ActivityListItem & {
@@ -67,6 +75,8 @@ export type ActivityInput = {
   organizerVerified: boolean;
   isSample: boolean;
   status: ActivityStatus;
+  branchId: string;
+  speaker: string | null;
 };
 
 export type GroupListItem = {
@@ -172,6 +182,9 @@ export type SignUpInput = {
   city: string;
   district: string;
   interests: string[];
+  memberType: MemberType;
+  partnerNumber: string | null;
+  homeBranchId: string | null;
 };
 
 export type ProfileInput = {
@@ -180,6 +193,9 @@ export type ProfileInput = {
   city: string;
   district: string;
   interests: string[];
+  memberType: MemberType;
+  partnerNumber: string | null;
+  homeBranchId: string | null;
 };
 
 export type ReminderRecipient = {

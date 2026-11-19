@@ -5,8 +5,14 @@ import { redirect } from "next/navigation";
 import { safeNextPath } from "@/lib/config";
 import { taipeiInputToIso } from "@/lib/format";
 import { getRepo } from "@/lib/repo";
-import type { ActivityInput, ActivityStatus, ChallengeInput, Difficulty, GroupInput, Result, Role } from "@/lib/types";
+import { CITIES } from "@/lib/constants";
+import type { ActivityInput, ActivityKind, ActivityStatus, ChallengeInput, Difficulty, GroupInput, MemberType, Result, Role } from "@/lib/types";
 import { stringsFromForm, textFromForm } from "@/lib/validation";
+
+function memberTypeFrom(value: string): MemberType {
+  if (value === "partner" || value === "enthusiast") return value;
+  return "public";
+}
 
 function refresh(paths: string[]) {
   for (const path of paths) revalidatePath(path);
@@ -22,6 +28,9 @@ export async function signUpAction(_prev: Result | null, formData: FormData): Pr
     city: textFromForm(formData, "city"),
     district: textFromForm(formData, "district"),
     interests: stringsFromForm(formData, "interests"),
+    memberType: memberTypeFrom(textFromForm(formData, "member_type")),
+    partnerNumber: textFromForm(formData, "partner_number") || null,
+    homeBranchId: textFromForm(formData, "home_branch_id") || null,
   });
   if (!result.ok || result.needsEmailConfirm) return result;
   redirect(safeNextPath(formData.get("next"), "/profile"));
@@ -53,6 +62,9 @@ export async function updateProfileAction(_prev: Result | null, formData: FormDa
     city: textFromForm(formData, "city"),
     district: textFromForm(formData, "district"),
     interests: stringsFromForm(formData, "interests"),
+    memberType: memberTypeFrom(textFromForm(formData, "member_type")),
+    partnerNumber: textFromForm(formData, "partner_number") || null,
+    homeBranchId: textFromForm(formData, "home_branch_id") || null,
   });
   if (result.ok) refresh(["/profile"]);
   return result;
@@ -129,12 +141,15 @@ export async function reportAction(_prev: Result | null, formData: FormData): Pr
 function activityInput(formData: FormData): ActivityInput {
   const statusValue = textFromForm(formData, "status");
   const status: ActivityStatus = statusValue === "draft" || statusValue === "cancelled" ? statusValue : "published";
+  const kindValue = textFromForm(formData, "kind");
+  const kind: ActivityKind =
+    kindValue === "talk" || kindValue === "meetup" || kindValue === "expo" || kindValue === "challenge" ? kindValue : "exercise";
   const difficultyValue = textFromForm(formData, "difficulty");
   const difficulty: Difficulty =
     difficultyValue === "moderate" || difficultyValue === "challenging" ? difficultyValue : "easy";
   return {
     title: textFromForm(formData, "title"),
-    kind: textFromForm(formData, "kind") === "talk" ? "talk" : "exercise",
+    kind,
     category: textFromForm(formData, "category"),
     description: textFromForm(formData, "description"),
     startsAt: taipeiInputToIso(textFromForm(formData, "starts_at")) ?? "invalid",
@@ -150,6 +165,8 @@ function activityInput(formData: FormData): ActivityInput {
     organizerVerified: formData.get("organizer_verified") === "on",
     isSample: formData.get("is_sample") === "on",
     status,
+    branchId: textFromForm(formData, "branch_id"),
+    speaker: textFromForm(formData, "speaker") || null,
   };
 }
 
@@ -171,7 +188,7 @@ export async function saveGroupAction(_prev: Result | null, formData: FormData):
     name: textFromForm(formData, "name"),
     description: textFromForm(formData, "description"),
     interest: textFromForm(formData, "interest"),
-    city: city === "臺北市" || city === "新北市" ? city : null,
+    city: (CITIES as readonly string[]).includes(city) ? city : null,
     isSample: formData.get("is_sample") === "on",
   };
   const result = await repo.adminSaveGroup(input, textFromForm(formData, "id") || undefined);
@@ -203,8 +220,13 @@ export async function setVerifiedAction(_prev: Result | null, formData: FormData
 export async function setRoleAction(_prev: Result | null, formData: FormData): Promise<Result> {
   const repo = await getRepo();
   const roleValue = textFromForm(formData, "role");
-  const role: Role = roleValue === "admin" || roleValue === "organizer" ? roleValue : "member";
-  const result = await repo.adminSetRole(textFromForm(formData, "user_id"), role);
+  const role: Role =
+    roleValue === "admin" || roleValue === "organizer" || roleValue === "branch_manager" ? roleValue : "member";
+  const result = await repo.adminSetRole(
+    textFromForm(formData, "user_id"),
+    role,
+    textFromForm(formData, "managed_branch_id") || null,
+  );
   if (result.ok) refresh(["/admin/members"]);
   return result;
 }
