@@ -29,7 +29,7 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
         </Link>
       </p>
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-full bg-[#e8f3fb] px-3 py-1">{group.interest}</span>
+        <span className="rounded-full bg-[#e3f3e6] px-3 py-1">{group.interest}</span>
         {group.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 font-medium">範例資料</span> : null}
       </div>
       <h1 className="text-4xl font-bold">{group.name}</h1>
@@ -62,7 +62,7 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
         <h2 className="text-3xl font-bold">公告欄</h2>
         {group.posts.length === 0 ? <p className="rounded-xl bg-white p-5">還沒有公告。</p> : null}
         {group.posts.map((post) => (
-          <article key={post.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+          <article key={post.id} className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
             {post.status === "hidden" ? <p className="font-medium text-red-900">這則公告已隱藏，只有管理員和作者看得到。</p> : null}
             <p className="whitespace-pre-wrap text-lg">{post.body}</p>
             <p>
@@ -78,7 +78,7 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
       </section>
 
       {user && group.joined ? (
-        <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+        <section className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
           <h2 className="text-2xl font-bold">寫一則公告</h2>
           <ActionForm action={createPostAction}>
             <input type="hidden" name="group_id" value={group.id} />

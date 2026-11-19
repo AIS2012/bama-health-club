@@ -31,13 +31,13 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         </Link>
       </p>
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-full bg-[#88012B] px-3 py-1 text-white">{kindLabel(activity.kind)}</span>
-        <span className="rounded-full bg-[#e8f3fb] px-3 py-1">{activity.category}</span>
+        <span className="rounded-full bg-[#14603a] px-3 py-1 text-white">{kindLabel(activity.kind)}</span>
+        <span className="rounded-full bg-[#e3f3e6] px-3 py-1">{activity.category}</span>
         <span className="rounded-full bg-[#f6f1e6] px-3 py-1">{difficultyLabel(activity.difficulty)}</span>
         {activity.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 font-medium">範例資料</span> : null}
         {activity.status === "cancelled" ? <span className="rounded-full bg-red-100 px-3 py-1">已取消</span> : null}
         {activity.organizerVerified ? (
-          <span className="rounded-full bg-[#e8f3fb] px-3 py-1 font-medium text-[#0058A5] ring-1 ring-[#0058A5]">已驗證主辦</span>
+          <span className="rounded-full bg-[#e3f3e6] px-3 py-1 font-medium text-[#0f5132] ring-1 ring-[#0f5132]">已驗證主辦</span>
         ) : (
           <span className="rounded-full bg-white px-3 py-1 ring-1">主辦尚未驗證</span>
         )}
@@ -61,7 +61,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         <p>{MEDICAL_DISCLAIMER}</p>
       </section>
 
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <h2 className="text-2xl font-bold">報名</h2>
         {!user ? (
           <p>
@@ -85,7 +85,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
           <ActionForm action={rsvpAction}>
             <input type="hidden" name="activity_id" value={activity.id} />
             <label className="flex min-h-12 items-start gap-3">
-              <input type="checkbox" name="safety" className="mt-1 size-6 accent-[#88012B]" required />
+              <input type="checkbox" name="safety" className="mt-1 size-6 accent-[#14603a]" required />
               <span>{SELF_DECLARATION}</span>
             </label>
             <Button type="submit" disabled={started || activity.status !== "published"}>
@@ -96,7 +96,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         ) : null}
       </section>
 
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <h2 className="text-2xl font-bold">主辦</h2>
         <p className="text-lg">
           {activity.organizerName} {activity.organizerVerified ? "（已驗證）" : ""}

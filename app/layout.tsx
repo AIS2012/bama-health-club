@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_TC } from "next/font/google";
+import { Noto_Sans_TC, Noto_Serif_TC } from "next/font/google";
 import { cookies } from "next/headers";
 import { SiteChrome } from "@/components/site-chrome";
 import { isDemoMode } from "@/lib/config";
@@ -7,10 +7,18 @@ import { getRepo } from "@/lib/repo";
 import "./globals.css";
 
 const noto = Noto_Sans_TC({
-  weight: ["400", "700"],
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-noto",
+  preload: false,
+});
+
+const notoSerif = Noto_Serif_TC({
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-noto-serif",
   preload: false,
 });
 
@@ -23,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#88012B",
+  themeColor: "#14603a",
   width: "device-width",
   initialScale: 1,
 };
@@ -37,7 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const font = scale === "lg" || scale === "xl" ? scale : undefined;
 
   return (
-    <html lang="zh-Hant" data-font={font} className={noto.variable}>
+    <html lang="zh-Hant" data-font={font} className={`${noto.variable} ${notoSerif.variable}`}>
       <body className="flex min-h-screen flex-col antialiased">
         <SiteChrome user={user} demo={isDemoMode()}>
           {children}

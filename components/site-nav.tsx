@@ -22,8 +22,8 @@ export function SiteNav() {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={`inline-flex min-h-12 items-center rounded-lg px-3 text-base font-medium ${
-              active ? "bg-[#FAC423] text-[#222]" : "text-white hover:bg-white/15"
+            className={`inline-flex min-h-12 items-center rounded-full px-4 text-base font-medium ${
+              active ? "bg-[#14603a] text-white" : "text-[#0e3328] hover:bg-[#e3f3e6]"
             }`}
           >
             {link.label}

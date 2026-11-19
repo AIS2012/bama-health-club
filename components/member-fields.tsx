@@ -89,7 +89,7 @@ export function MemberFields({
                 name="interests"
                 value={interest}
                 defaultChecked={interests.includes(interest)}
-                className="size-6 accent-[#88012B]"
+                className="size-6 accent-[#14603a]"
               />
               {interest}
             </label>
