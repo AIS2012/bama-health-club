@@ -1,0 +1,48 @@
+import { ActionForm } from "@/components/action-form";
+import { Button } from "@/components/ui/button";
+import { setRoleAction, setVerifiedAction } from "@/lib/actions";
+import { ROLE_LABEL } from "@/lib/constants";
+import { getRepo } from "@/lib/repo";
+
+export const metadata = { title: "管理會員" };
+
+export default async function AdminMembersPage() {
+  const members = await (await getRepo()).adminListMembers();
+  if (!Array.isArray(members)) return <p>{members.ok ? "無法讀取會員" : members.error}</p>;
+  return (
+    <div className="grid gap-4">
+      <h2 className="text-3xl font-bold">會員</h2>
+      {members.map((member) => (
+        <article key={member.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#12382c]/20">
+          <h3 className="text-2xl font-bold">
+            {member.nickname} {member.verified ? "· 已驗證" : "· 未驗證"}
+          </h3>
+          <p>
+            {member.email}
+            <br />
+            {member.city}
+            {member.district} · {ROLE_LABEL[member.role]} · {member.phone ?? "未留電話"}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <ActionForm action={setVerifiedAction}>
+              <input type="hidden" name="user_id" value={member.id} />
+              <input type="hidden" name="verified" value={member.verified ? "false" : "true"} />
+              <Button type="submit" variant="outline">
+                {member.verified ? "取消驗證" : "標記已驗證"}
+              </Button>
+            </ActionForm>
+            <ActionForm action={setRoleAction} className="sm:grid-cols-[12rem_auto] sm:items-center">
+              <input type="hidden" name="user_id" value={member.id} />
+              <select name="role" defaultValue={member.role} className="h-12 rounded-lg border bg-card px-3">
+                <option value="member">會員</option>
+                <option value="organizer">主辦</option>
+                <option value="admin">管理員</option>
+              </select>
+              <Button type="submit">更新角色</Button>
+            </ActionForm>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
