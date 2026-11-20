@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { FontToggle } from "@/components/font-toggle";
-import { SiteNav } from "@/components/site-nav";
-import { signOutAction } from "@/lib/actions";
+import { SiteHeader } from "@/components/site-header";
+import { SiteNotice } from "@/components/site-notice";
 import { FRAUD_WARNING, GSC_PHONE, JOIN_BUSINESS_NOTE, JOIN_BUSINESS_URL, MEDICAL_DISCLAIMER, MEMBER_PORTAL_URL, OFFICIAL_SITE_URL } from "@/lib/constants";
 import type { Profile } from "@/lib/types";
 
@@ -21,67 +20,9 @@ export function SiteChrome({
       <a className="skip-link" href="#main">
         跳到主要內容
       </a>
-      <header className="sticky top-0 z-40 border-b border-[#14603a]/10 bg-[#f4f7f1]/92 backdrop-blur-md">
-        <div className="mx-auto grid max-w-6xl gap-3 px-4 py-3 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <Link href="/" className="inline-flex min-h-12 items-center gap-3">
-              <span
-                data-logo-slot="official"
-                title="官方標誌位置，待公司核准後替換，請勿外連官網圖檔"
-                aria-hidden="true"
-                className="grid size-12 shrink-0 place-items-center rounded-full bg-[#14603a] font-serif text-2xl leading-none text-white"
-              >
-                八
-              </span>
-              <span>
-                <span className="block font-serif text-2xl leading-none text-[#0e3328]">八馬健康俱樂部</span>
-                <span className="mt-1 block text-base text-[#3c5146]">Total Swiss 八馬國際事業</span>
-              </span>
-            </Link>
-            <div className="flex flex-wrap items-center gap-2">
-              {user?.role === "admin" || user?.role === "branch_manager" ? (
-                <Link href="/admin" className="inline-flex min-h-12 items-center rounded-full bg-[#e3f3e6] px-4 font-medium text-[#0e3328]">
-                  {user.role === "branch_manager" ? "據點活動" : "管理後台"}
-                </Link>
-              ) : null}
-              {user ? (
-                <>
-                  <Link href="/profile" className="inline-flex min-h-12 items-center rounded-full px-3 font-medium text-[#0e3328] hover:bg-[#e3f3e6]">
-                    {user.nickname}
-                  </Link>
-                  <form action={signOutAction}>
-                    <button type="submit" className="inline-flex min-h-12 items-center rounded-full border border-[#14603a]/30 bg-white px-4 text-[#0e3328]">
-                      登出
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="inline-flex min-h-12 items-center rounded-full px-3 font-medium text-[#0e3328] hover:bg-[#e3f3e6]">
-                    登入
-                  </Link>
-                  <Link href="/signup" className="inline-flex min-h-12 items-center rounded-full bg-[#14603a] px-4 font-medium text-white hover:bg-[#0f5132]">
-                    免費加入
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <SiteNav />
-            <FontToggle />
-          </div>
-        </div>
-      </header>
-      <div className="fraud-banner" role="note">
-        <p className="mx-auto max-w-6xl px-4 py-3 text-base font-medium sm:px-6">{FRAUD_WARNING}</p>
-      </div>
-      {demo ? (
-        <p className="bg-[#e3f3e6] px-4 py-2 text-center text-base text-[#0f5132]">
-          目前是本機示範模式，尚未連接 Supabase。資料只存在這台電腦。
-        </p>
-      ) : null}
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      <SiteHeader user={user ? { nickname: user.nickname, role: user.role } : null} />
+      <SiteNotice demo={demo} />
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-3 pb-8 md:px-6 md:py-12">
         {children}
       </main>
       <footer className="mt-8 bg-[#0e3328] text-[#f6f4ee]">
@@ -124,6 +65,7 @@ export function SiteChrome({
         </div>
         <div className="border-t border-white/15">
           <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 text-base leading-relaxed sm:px-6">
+            <p>{FRAUD_WARNING}</p>
             <p>{MEDICAL_DISCLAIMER}</p>
             <p>{JOIN_BUSINESS_NOTE}</p>
             <p>

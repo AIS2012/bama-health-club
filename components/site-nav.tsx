@@ -11,10 +11,11 @@ const links = [
   { href: "/challenges", label: "挑戰" },
 ];
 
-export function SiteNav() {
+export function SiteNav({ layout = "bar", onNavigate }: { layout?: "bar" | "menu"; onNavigate?: () => void }) {
   const pathname = usePathname();
+  const menu = layout === "menu";
   return (
-    <nav aria-label="主要" className="flex flex-wrap gap-2">
+    <nav aria-label="主要" className={menu ? "grid gap-2" : "flex flex-nowrap gap-2"}>
       {links.map((link) => {
         const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
         return (
@@ -22,9 +23,16 @@ export function SiteNav() {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={`inline-flex min-h-12 items-center rounded-full px-4 text-base font-medium ${
-              active ? "bg-[#14603a] text-white" : "text-[#0e3328] hover:bg-[#e3f3e6]"
-            }`}
+            onClick={onNavigate}
+            className={
+              menu
+                ? `flex min-h-14 items-center rounded-2xl px-4 text-xl font-medium ${
+                    active ? "bg-[#14603a] text-white" : "text-[#0e3328] hover:bg-[#e3f3e6]"
+                  }`
+                : `inline-flex min-h-12 shrink-0 items-center rounded-full px-4 text-base font-medium whitespace-nowrap ${
+                    active ? "bg-[#14603a] text-white" : "text-[#0e3328] hover:bg-[#e3f3e6]"
+                  }`
+            }
           >
             {link.label}
           </Link>

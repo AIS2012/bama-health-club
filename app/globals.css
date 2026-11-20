@@ -170,7 +170,22 @@
 .fraud-banner {
   background: #fff3bf;
   color: #1a1200;
-  border-bottom: 3px solid #8a5a00;
+  border-bottom: 2px solid #8a5a00;
+}
+
+.menu-panel {
+  animation: menu-in 0.18s ease;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .legal-draft {
@@ -208,7 +223,8 @@ article[id] {
   html {
     scroll-behavior: auto;
   }
-  .rise-in {
+  .rise-in,
+  .menu-panel {
     animation: none;
   }
 }

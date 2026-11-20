@@ -10,7 +10,7 @@ const scales = [
 
 type Scale = (typeof scales)[number][0];
 
-export function FontToggle() {
+export function FontToggle({ showLabel = true }: { showLabel?: boolean }) {
   const [current, setCurrent] = useState<Scale>("md");
   const [ready, setReady] = useState(false);
 
@@ -29,7 +29,7 @@ export function FontToggle() {
 
   return (
     <div className="flex flex-wrap items-center gap-2" role="group" aria-label="文字大小">
-      <span className="text-base font-medium text-[#0e3328]">文字</span>
+      {showLabel ? <span className="text-base font-medium text-[#0e3328]">文字</span> : null}
       {scales.map(([scale, label]) => {
         const active = ready && current === scale;
         return (
