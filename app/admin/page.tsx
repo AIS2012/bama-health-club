@@ -30,13 +30,13 @@ export default async function AdminHomePage() {
           ["會員", memberCount, "/admin/members"],
           ["未處理檢舉", openReports, "/admin/reports"],
         ].map(([label, count, href]) => (
-          <Link key={String(label)} href={String(href)} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+          <Link key={String(label)} href={String(href)} className="rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
             <span className="block text-lg">{label}</span>
             <span className="text-4xl font-bold">{count}</span>
           </Link>
         ))}
       </div>
-      <section className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+      <section className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <h2 className="text-2xl font-bold">活動提醒信</h2>
         <p>寄給未來 30 小時內已報名的會員。沒有 RESEND_API_KEY 時不會真的寄出。</p>
         <ActionForm action={sendRemindersAction}>

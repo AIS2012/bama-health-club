@@ -15,12 +15,12 @@ export default async function AdminChallengesPage() {
       <h2 className="text-3xl font-bold">挑戰</h2>
       <ul className="grid gap-2">
         {challenges.map((challenge) => (
-          <li key={challenge.id} className="rounded-xl bg-white p-4 ring-1 ring-[#88012B]/20">
+          <li key={challenge.id} className="rounded-xl bg-white p-4 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
             {challenge.title} · {challenge.durationDays} 天{challenge.isSample ? " · 範例" : ""}
           </li>
         ))}
       </ul>
-      <ActionForm action={saveChallengeAction} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+      <ActionForm action={saveChallengeAction} className="rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <label className="grid gap-2">
           名稱
           <Input name="title" required />

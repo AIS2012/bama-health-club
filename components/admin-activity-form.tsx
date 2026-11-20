@@ -11,7 +11,7 @@ import type { ActivityDetail } from "@/lib/types";
 export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
   const city = activity?.city ?? "台北市";
   return (
-    <ActionForm action={saveActivityAction} className="rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+    <ActionForm action={saveActivityAction} className="rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
       <input type="hidden" name="id" value={activity?.id ?? ""} />
       <label className="grid gap-2">
         名稱

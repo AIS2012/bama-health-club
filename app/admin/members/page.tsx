@@ -14,7 +14,7 @@ export default async function AdminMembersPage() {
     <div className="grid gap-4">
       <h2 className="text-3xl font-bold">會員</h2>
       {members.map((member) => (
-        <article key={member.id} className="grid gap-3 rounded-xl bg-white p-5 ring-1 ring-[#88012B]/20">
+        <article key={member.id} className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
           <h3 className="text-2xl font-bold">
             {member.nickname} {member.verified ? "· 已驗證" : "· 未驗證"}
           </h3>

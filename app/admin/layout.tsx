@@ -24,7 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <h1 className="text-4xl font-bold">{user.role === "branch_manager" ? "據點活動管理" : "管理後台"}</h1>
         <nav aria-label="管理" className="flex flex-wrap gap-2">
           {visible.map(([href, label]) => (
-            <Link key={href} href={href} className="inline-flex min-h-12 items-center rounded-lg bg-white px-3 ring-1 ring-[#88012B]/30">
+            <Link key={href} href={href} className="inline-flex min-h-12 items-center rounded-lg bg-white px-3 ring-1 ring-[#14603a]/20">
               {label}
             </Link>
           ))}

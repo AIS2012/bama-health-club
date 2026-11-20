@@ -21,10 +21,10 @@ export default async function AdminActivityPage({ params }: { params: Promise<{ 
         </Link>
       </p>
       <h2 className="text-3xl font-bold">{activity.title}</h2>
-      <section className="overflow-x-auto rounded-xl bg-white ring-1 ring-[#88012B]/20">
+      <section className="overflow-x-auto rounded-xl bg-white shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <table className="w-full min-w-[40rem] text-left text-base">
           <caption className="px-4 py-3 text-left text-xl font-bold">報名名單</caption>
-          <thead className="bg-[#88012B] text-white">
+          <thead className="bg-[#14603a] text-white">
             <tr>
               <th className="px-3 py-3">暱稱</th>
               <th className="px-3 py-3">信箱</th>

@@ -12,7 +12,7 @@ export default async function AdminActivitiesPage() {
       <h2 className="text-3xl font-bold">活動</h2>
       <div className="grid gap-3">
         {activities.map((activity) => (
-          <Link key={activity.id} href={`/admin/activities/${activity.id}`} className="rounded-xl bg-white p-4 ring-1 ring-[#88012B]/20">
+          <Link key={activity.id} href={`/admin/activities/${activity.id}`} className="rounded-xl bg-white p-4 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
             <span className="block text-xl font-bold">{activity.title}</span>
             <span>
               {formatTaipei(activity.startsAt)} · {activity.status === "published" ? "公開" : activity.status === "draft" ? "草稿" : "取消"} · 報名 {activity.goingCount}/{activity.capacity}
