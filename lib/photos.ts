@@ -1,4 +1,8 @@
 export const photos = {
+  hero: {
+    src: "/photos/hero-morning-garden.jpg",
+    alt: "一對長輩在陽光下的花叢與綠葉前微笑",
+  },
   gardenWalk: {
     src: "/photos/hero-garden-walk.jpg",
     alt: "兩位長輩走在綠樹與涼亭之間的木棧道上，晨光灑在公園裡",

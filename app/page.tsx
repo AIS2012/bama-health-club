@@ -125,27 +125,26 @@ export default async function HomePage() {
 
   return (
     <div className="grid gap-16 sm:gap-24">
-      <section className="bleed" aria-labelledby="hero-title">
-        <div className="relative h-[26rem] sm:h-[38rem]">
-          <Image
-            src={photos.gardenWalk.src}
-            alt={photos.gardenWalk.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[center_55%]"
-          />
-        </div>
-        <div className="mx-auto -mt-28 max-w-6xl px-4 sm:-mt-40 sm:px-6">
-          <div className="rise-in max-w-2xl rounded-[2rem] bg-[#0e3328] px-6 py-8 text-white shadow-[0_24px_60px_-28px_rgba(14,51,40,0.85)] sm:px-10 sm:py-12">
+      <section className="bleed relative isolate min-h-[calc(100svh-8rem)] overflow-hidden md:min-h-[46rem]" aria-labelledby="hero-title">
+        <Image
+          src={photos.hero.src}
+          alt={photos.hero.alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[center_28%] md:object-[62%_center]"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0e3328]/92 via-[#0e3328]/28 to-transparent md:bg-gradient-to-r md:from-[#0e3328]/88 md:via-[#0e3328]/42 md:to-transparent" />
+        <div className="relative mx-auto flex min-h-[calc(100svh-8rem)] max-w-6xl items-end px-4 pt-8 pb-7 md:min-h-[46rem] md:items-center md:px-6 md:py-16">
+          <div className="rise-in max-w-xl text-white md:max-w-2xl">
             <p className="text-base font-medium text-[#d7eadc]">Total Swiss 八馬國際事業</p>
-            <h1 id="hero-title" className="mt-3 text-5xl text-white sm:text-6xl">
+            <h1 id="hero-title" className="mt-2 text-5xl text-white md:mt-3 md:text-6xl">
               迎向美好人生
             </h1>
-            <p className="mt-5 text-xl leading-relaxed text-white">
-              八馬健康俱樂部給夥伴、愛用者和一般大眾。一起運動，也歡迎來據點聽講座：健走、瑜珈、太極、健康講座、據點聚會和 21 日挑戰。俱樂部入會免費，用來認識據點活動，不是醫療服務，也不談產品效果。
+            <p className="mt-4 max-w-lg text-lg leading-relaxed text-white md:text-xl">
+              八馬健康俱樂部給夥伴、愛用者和一般大眾。一起運動，也歡迎來據點聽講座。俱樂部入會免費，用來認識據點活動，不是醫療服務，也不談產品效果。
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/signup" className="inline-flex min-h-14 items-center rounded-full bg-white px-6 text-lg font-bold text-[#0e3328]">
                 免費加入會員
               </Link>
@@ -153,7 +152,7 @@ export default async function HomePage() {
                 看看活動
               </Link>
             </div>
-            <p className="mt-5">
+            <p className="mt-4">
               <Link href="/branches" className="inline-flex min-h-12 items-center text-lg text-[#d7eadc] underline underline-offset-4">
                 先找據點
               </Link>
