@@ -1,4 +1,12 @@
 export const photos = {
+  hero: {
+    src: "/photos/hero-healthy-breakfast.jpg",
+    alt: "一位女士在明亮廚房開心準備優格水果早餐",
+  },
+  heroMobile: {
+    src: "/photos/hero-park-walk-mobile.jpg",
+    alt: "一群長輩在陽光公園裡開心散步聊天",
+  },
   gardenWalk: {
     src: "/photos/hero-garden-walk.jpg",
     alt: "兩位長輩走在綠樹與涼亭之間的木棧道上，晨光灑在公園裡",
