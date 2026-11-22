@@ -28,8 +28,8 @@ export function SiteChrome({
       <footer className="mt-8 bg-[#0e3328] text-[#f6f4ee]">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_0.8fr_0.8fr]">
           <div className="grid content-start gap-3">
-            <p className="font-serif text-3xl text-white">八馬健康俱樂部</p>
-            <p className="text-[#d7eadc]">Total Swiss 八馬國際事業的活動平台。俱樂部入會免費，與加入事業分開。</p>
+            <p className="font-serif text-3xl text-white">健康俱樂部</p>
+            <p className="text-[#d7eadc]">大臺北運動與講座。俱樂部入會免費，與加入事業分開。</p>
             <p>GSC 全球客服中心 {GSC_PHONE}</p>
           </div>
           <nav aria-label="頁尾俱樂部" className="grid content-start">

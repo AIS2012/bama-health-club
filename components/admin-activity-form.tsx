@@ -24,7 +24,7 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
             <option value="exercise">一起運動</option>
             <option value="talk">健康講座</option>
             <option value="meetup">據點聚會</option>
-            <option value="expo">樂齡／博覽會</option>
+            <option value="expo">健康交流</option>
             <option value="challenge">21日挑戰</option>
           </select>
         </label>

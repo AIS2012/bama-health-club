@@ -21,7 +21,7 @@ export default async function BranchesPage({
   return (
     <div className="grid gap-8">
       <PageHero kicker="據點" title="台灣據點" image={photos.forestCouple.src} alt={photos.forestCouple.alt}>
-        以下 16 處地址來自 Total Swiss 官網公開的營業據點頁，供找活動與講座使用。本頁只列台灣據點。大臺北先看台北營運中心。
+        以下 16 處地址來自公司官網公開的營業據點頁，供找活動與講座使用。本頁只列台灣據點。大臺北先看台北營運中心。
       </PageHero>
       <p className="rounded-[1.25rem] border border-[#9a3412] bg-[#fff7ed] px-4 py-3">{HOURS_NOTE}</p>
       <form method="get" className="grid gap-3 rounded-[1.5rem] bg-white p-4 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/10 sm:grid-cols-[1fr_auto] sm:items-end">

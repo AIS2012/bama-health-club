@@ -1,4 +1,4 @@
--- Total Swiss 據點、會員身分與據點管理員。不改既有報名流程。
+-- 台灣據點、會員身分與據點管理員。不改既有報名流程。
 
 create table public.branches (
   id text primary key,

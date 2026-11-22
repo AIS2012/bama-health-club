@@ -1,4 +1,4 @@
--- 八馬健康俱樂部初版結構。
+-- 健康俱樂部初版結構。
 -- 不存放病歷、健檢報告或診斷。角色放在 profiles，不讀取使用者可改的 user_metadata。
 
 create extension if not exists pgcrypto with schema extensions;

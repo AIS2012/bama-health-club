@@ -1,6 +1,6 @@
-# 八馬健康俱樂部
+# 健康俱樂部
 
-Total Swiss 八馬國際事業的活動平台。夥伴、愛用者與一般大眾都可以看活動、報名或候補、加入社團、做每日打卡。管理員與據點管理員可以在後台維護內容。
+大臺北的運動與講座平台。夥伴、愛用者與一般大眾都可以看活動、報名或候補、加入社團、做每日打卡。管理員與據點管理員可以在後台維護內容。
 
 目前入會免費。資料表已留會員方案與價格欄位，這一版沒有金流。全站介面是繁體中文，預設字級 18px，可切換較大、特大。
 
@@ -87,7 +87,7 @@ Supabase 模式下，排程與候補信的寄件清單需要 `SUPABASE_SERVICE_R
 
 ## 部署建議：Vercel
 
-建議放在 **Vercel**。這個專案是 Next.js App Router，含 Server Actions、Cookie 工作階段，以及每天一次的提醒。正式網域由 Total Swiss 決定後，再把 `NEXT_PUBLIC_SITE_URL` 設成那個網址。Cloudflare Workers 需要再套 OpenNext，不建議作為第一個正式環境。
+建議放在 **Vercel**。這個專案是 Next.js App Router，含 Server Actions、Cookie 工作階段，以及每天一次的提醒。正式網域確定後，再把 `NEXT_PUBLIC_SITE_URL` 設成那個網址。Cloudflare Workers 需要再套 OpenNext，不建議作為第一個正式環境。
 
 ## 還需要公司確認
 
