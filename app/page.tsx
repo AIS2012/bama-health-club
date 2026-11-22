@@ -94,7 +94,7 @@ const stories = [
 const faqs = [
   {
     q: "俱樂部入會要錢嗎？",
-    a: "不用。免費會員就能報名活動、加入社團、參加挑戰。這和加入 Total Swiss 事業是兩件事。",
+    a: "不用。免費會員就能報名活動、加入社團、參加挑戰。這和加入事業是兩件事。",
   },
   {
     q: "加入事業是什麼？",
@@ -146,12 +146,12 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[48%] bg-gradient-to-r from-[#f7f4ee]/88 via-[#f7f4ee]/45 to-transparent md:block" />
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-4 pt-4 md:min-h-[46rem] md:justify-center md:px-8 md:pt-0">
           <div className="rise-in max-w-md text-[#0e3328] md:max-w-lg">
-            <p className="text-base font-medium text-[#14603a]">Total Swiss 八馬國際事業</p>
+            <p className="text-base font-medium text-[#14603a]">大臺北樂齡運動與講座</p>
             <h1 id="hero-title" className="mt-1 text-4xl leading-tight text-[#0e3328] md:mt-3 md:text-6xl">
               迎向美好人生
             </h1>
             <p className="mt-3 max-w-lg text-lg leading-relaxed text-[#1a2e24] md:mt-4 md:text-xl">
-              八馬健康俱樂部給夥伴、愛用者和一般大眾。一起運動，也歡迎來據點聽講座。俱樂部入會免費，用來認識據點活動，不是醫療服務，也不談產品效果。
+              樂齡健康俱樂部給夥伴、愛用者和一般大眾。一起運動，也歡迎來據點聽講座。俱樂部入會免費，用來認識據點活動，不是醫療服務，也不談產品效果。
             </p>
             <div className="mt-6 hidden flex-wrap gap-3 md:flex">
               <Link href="/signup" className="inline-flex min-h-14 items-center rounded-full bg-[#14603a] px-6 text-lg font-bold text-white hover:bg-[#0f5132]">
@@ -249,7 +249,7 @@ export default async function HomePage() {
             全部據點
           </Link>
         </div>
-        <p>地址來自 Total Swiss 官網公開的營業據點頁。大臺北的活動多從台北營運中心開始。</p>
+        <p>地址來自公司官網公開的營業據點頁。大臺北的活動多從台北營運中心開始。</p>
         <article className="grid overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_50px_-32px_rgba(14,51,40,0.65)] ring-1 ring-[#14603a]/10 md:grid-cols-[0.9fr_1.1fr]">
           <div className="relative min-h-56">
             <Image

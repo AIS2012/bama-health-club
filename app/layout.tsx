@@ -24,10 +24,15 @@ const notoSerif = Noto_Serif_TC({
 
 export const metadata: Metadata = {
   title: {
-    default: "八馬健康俱樂部",
-    template: "%s｜八馬健康俱樂部",
+    default: "樂齡健康俱樂部",
+    template: "%s｜樂齡健康俱樂部",
   },
-  description: "Total Swiss 八馬國際事業的八馬健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+  description: "樂齡健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+  openGraph: {
+    title: "樂齡健康俱樂部",
+    description: "樂齡健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+    locale: "zh_TW",
+  },
 };
 
 export const viewport: Viewport = {

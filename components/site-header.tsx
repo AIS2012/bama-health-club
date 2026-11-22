@@ -81,9 +81,9 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
             aria-hidden="true"
             className="grid size-8 shrink-0 place-items-center rounded-full bg-[#14603a] font-serif text-lg leading-none text-white"
           >
-            八
+            樂
           </span>
-          <span className="truncate font-serif text-lg leading-none text-[#0e3328]">八馬健康俱樂部</span>
+          <span className="truncate font-serif text-lg leading-none text-[#0e3328]">樂齡健康俱樂部</span>
         </Link>
         <div className="flex shrink-0 items-center gap-1">
           {user ? (
@@ -126,11 +126,11 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
               aria-hidden="true"
               className="grid size-12 shrink-0 place-items-center rounded-full bg-[#14603a] font-serif text-2xl leading-none text-white"
             >
-              八
+              樂
             </span>
             <span>
-              <span className="block font-serif text-2xl leading-none text-[#0e3328]">八馬健康俱樂部</span>
-              <span className="mt-1 block text-base text-[#3c5146]">Total Swiss 八馬國際事業</span>
+              <span className="block font-serif text-2xl leading-none text-[#0e3328]">樂齡健康俱樂部</span>
+              <span className="mt-1 block text-base text-[#3c5146]">大臺北樂齡運動與講座</span>
             </span>
           </Link>
           <div className="flex flex-nowrap items-center gap-2">
