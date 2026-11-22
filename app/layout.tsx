@@ -24,13 +24,13 @@ const notoSerif = Noto_Serif_TC({
 
 export const metadata: Metadata = {
   title: {
-    default: "樂齡健康俱樂部",
-    template: "%s｜樂齡健康俱樂部",
+    default: "健康俱樂部",
+    template: "%s｜健康俱樂部",
   },
-  description: "樂齡健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+  description: "健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
   openGraph: {
-    title: "樂齡健康俱樂部",
-    description: "樂齡健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+    title: "健康俱樂部",
+    description: "健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
     locale: "zh_TW",
   },
 };

@@ -8,7 +8,7 @@ export default function PrivacyPage() {
       </p>
       <h1 className="text-4xl font-bold">隱私權政策（草稿）</h1>
       <p>
-        樂齡健康俱樂部是 Total Swiss 八馬國際事業用來公布活動、講座與挑戰的平台。公司本體是依法辦理的多層次傳銷事業。本頁依臺灣《個人資料保護法》說明俱樂部怎麼處理會員資料，正式上線前仍須律師審閱。
+        健康俱樂部是 Total Swiss 八馬國際事業用來公布活動、講座與挑戰的平台。公司本體是依法辦理的多層次傳銷事業。本頁依臺灣《個人資料保護法》說明俱樂部怎麼處理會員資料，正式上線前仍須律師審閱。
       </p>
       <h2 className="text-2xl font-bold">蒐集哪些資料</h2>
       <ul className="list-disc pl-6">

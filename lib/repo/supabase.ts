@@ -220,7 +220,7 @@ export const supabaseRepo: Repo = {
     });
     if (error) return fail(error);
     if (!data.session) return { ok: true, needsEmailConfirm: true, message: "請到信箱點確認信，完成後即可登入。" };
-    return { ok: true, message: "歡迎加入樂齡健康俱樂部" };
+    return { ok: true, message: "歡迎加入健康俱樂部" };
   },
   async signIn(email, password) {
     const supabase = await createClient();

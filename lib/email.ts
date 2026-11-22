@@ -20,7 +20,7 @@ export async function sendEmail(input: SendInput): Promise<SendResult> {
   if (!key) return { provider: "skipped", id: null };
 
   const resend = new Resend(key);
-  const from = process.env.RESEND_FROM?.trim() || "樂齡健康俱樂部 <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM?.trim() || "健康俱樂部 <onboarding@resend.dev>";
   const { data, error } = await resend.emails.send(
     {
       from,
@@ -42,7 +42,7 @@ export async function sendEmail(input: SendInput): Promise<SendResult> {
 function layout(title: string, body: string) {
   return `<div style="font-family:'Noto Sans TC',sans-serif;font-size:18px;line-height:1.6;color:#1a2e24;background:#f4f7f1;padding:24px">
     <div style="max-width:560px;margin:0 auto;background:#ffffff;border:2px solid #14603a;border-radius:12px;padding:24px">
-      <p style="margin:0 0 8px;font-size:16px;letter-spacing:0.08em;color:#14603a">樂齡健康俱樂部</p>
+      <p style="margin:0 0 8px;font-size:16px;letter-spacing:0.08em;color:#14603a">健康俱樂部</p>
       <h1 style="font-size:24px;margin:0 0 16px">${escapeHtml(title)}</h1>
       ${body}
       <p style="margin-top:24px;font-size:18px;color:#3c5146">這封信不是醫療建議。工作人員不會要求您轉帳或操作 ATM。</p>
@@ -96,12 +96,12 @@ export function reminderMessage(input: {
 }
 
 export function magicLinkMessage(link: string) {
-  const subject = "樂齡健康俱樂部登入連結";
+  const subject = "健康俱樂部登入連結";
   const text = `請在 30 分鐘內開啟這個連結登入：${link}。如果不是您本人申請，請忽略這封信。`;
   const html = layout(
     "登入連結",
     `<p>請在 30 分鐘內點下面的按鈕登入。連結只可使用一次。</p>
-     <p><a href="${escapeHtml(link)}">登入樂齡健康俱樂部</a></p>
+     <p><a href="${escapeHtml(link)}">登入健康俱樂部</a></p>
      <p>如果不是您本人申請，請忽略這封信。</p>`,
   );
   return { subject, text, html };

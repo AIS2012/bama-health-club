@@ -108,7 +108,7 @@ export const demoRepo: Repo = {
     if (!result.ok || !result.user) return result.ok ? { ok: false, error: "註冊失敗" } : result;
     const token = await updateDb((db) => createSession(db, result.user!.id));
     await writeToken(token);
-    return { ok: true, message: "歡迎加入樂齡健康俱樂部" };
+    return { ok: true, message: "歡迎加入健康俱樂部" };
   },
   async signIn(email, password) {
     const result = await updateDb((db) => login(db, email, password));

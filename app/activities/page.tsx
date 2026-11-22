@@ -29,7 +29,7 @@ export default async function ActivitiesPage({
   return (
     <div className="grid gap-8">
       <PageHero kicker="活動" title="近期活動" image={photos.gardenWalk.src} alt={photos.gardenWalk.alt}>
-        健走、瑜珈、太極、健康講座、據點聚會、樂齡／博覽會與 21 日挑戰。大臺北範例場次排在前面。標示「範例資料」的不是正式邀約。
+        健走、瑜珈、太極、健康講座、據點聚會、健康交流與 21 日挑戰。大臺北範例場次排在前面。標示「範例資料」的不是正式邀約。
       </PageHero>
       <form method="get" className="grid gap-3 rounded-[1.5rem] bg-white p-4 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/10 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
         <label className="grid gap-2 text-base">
