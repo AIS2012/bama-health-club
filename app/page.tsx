@@ -125,57 +125,40 @@ export default async function HomePage() {
 
   return (
     <div className="grid gap-16 sm:gap-24">
-      <section className="bleed relative min-h-[calc(100svh-8rem)] md:min-h-[46rem]" aria-labelledby="hero-title">
-        <Image
-          src={photos.heroMobile.src}
-          alt={photos.heroMobile.alt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[center_30%] md:hidden"
-        />
-        <Image
-          src={photos.hero.src}
-          alt={photos.hero.alt}
-          fill
-          priority
-          sizes="100vw"
-          className="hidden object-cover object-center md:block"
-        />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[36%] bg-gradient-to-b from-white/80 via-white/40 to-transparent md:hidden" />
-        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[48%] bg-gradient-to-r from-[#f7f4ee]/88 via-[#f7f4ee]/45 to-transparent md:block" />
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-4 pt-4 md:min-h-[46rem] md:justify-center md:px-8 md:pt-0">
-          <div className="rise-in max-w-md text-[#0e3328] md:max-w-lg">
+      <section className="bleed relative md:min-h-[46rem]" aria-labelledby="hero-title">
+        <div className="relative h-[19rem] md:absolute md:inset-0 md:h-auto">
+          <Image
+            src={photos.hero.src}
+            alt={photos.hero.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[72%_42%] md:object-center"
+          />
+          <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[48%] bg-gradient-to-r from-[#f7f4ee]/88 via-[#f7f4ee]/45 to-transparent md:block" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-4 py-6 md:flex md:min-h-[46rem] md:items-center md:px-8 md:py-16">
+          <div className="rise-in max-w-xl text-[#0e3328] md:max-w-lg">
             <p className="text-base font-medium text-[#14603a]">大臺北運動與講座</p>
-            <h1 id="hero-title" className="mt-1 text-4xl leading-tight text-[#0e3328] md:mt-3 md:text-6xl">
+            <h1 id="hero-title" className="mt-2 text-4xl leading-tight text-[#0e3328] md:mt-3 md:text-6xl">
               迎向美好人生
             </h1>
             <p className="mt-3 max-w-lg text-lg leading-relaxed text-[#1a2e24] md:mt-4 md:text-xl">
               健康俱樂部給夥伴、愛用者和一般大眾。一起運動，也歡迎來據點聽講座。俱樂部入會免費，用來認識據點活動，不是醫療服務，也不談產品效果。
             </p>
-            <div className="mt-6 hidden flex-wrap gap-3 md:flex">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/signup" className="inline-flex min-h-14 items-center rounded-full bg-[#14603a] px-6 text-lg font-bold text-white hover:bg-[#0f5132]">
                 免費加入會員
               </Link>
-              <Link href="/activities" className="inline-flex min-h-14 items-center rounded-full border-2 border-[#14603a] px-6 text-lg font-medium text-[#0e3328]">
+              <Link href="/activities" className="inline-flex min-h-14 items-center rounded-full border-2 border-[#14603a] bg-white px-6 text-lg font-medium text-[#0e3328]">
                 看看活動
               </Link>
             </div>
-            <p className="mt-4 hidden md:block">
+            <p className="mt-4">
               <Link href="/branches" className="inline-flex min-h-12 items-center text-lg font-medium text-[#0f5132] underline underline-offset-4">
                 先找據點
               </Link>
             </p>
-          </div>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-[#f7f4ee]/95 via-[#f7f4ee]/70 to-transparent px-4 pt-8 pb-4 md:hidden">
-          <div className="flex flex-wrap gap-3">
-            <Link href="/signup" className="inline-flex min-h-14 items-center rounded-full bg-[#14603a] px-5 text-lg font-bold text-white">
-              免費加入會員
-            </Link>
-            <Link href="/activities" className="inline-flex min-h-14 items-center rounded-full border-2 border-[#14603a] bg-white/80 px-5 text-lg font-medium text-[#0e3328]">
-              看看活動
-            </Link>
           </div>
         </div>
       </section>
