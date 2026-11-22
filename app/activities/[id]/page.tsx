@@ -45,12 +45,12 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
       <h1 className="text-4xl font-bold leading-tight">{activity.title}</h1>
       <p className="text-xl">{formatTaipei(activity.startsAt)} 到 {formatTaipei(activity.endsAt)}</p>
       <p className="text-lg">
-        {activity.branchName ? <>據點：{activity.branchName}<br /></> : null}
+        {activity.branchName ? <>上課場地：{activity.branchName}<br /></> : null}
         {activity.locationName}
         <br />
         {activity.address}
       </p>
-      {activity.speaker ? <p>講座講者：{activity.speaker}（僅標示姓名，不代表療效或專業背書）</p> : null}
+      {activity.speaker ? <p>合作講師／合作單位：{activity.speaker}。名稱只供辨識，不代表療效或品牌背書。</p> : null}
       <p className="text-lg font-medium">{spotsLabel(activity.goingCount, activity.capacity)}</p>
       {activity.waitlistCount > 0 ? <p>目前候補 {activity.waitlistCount} 人</p> : null}
       <p className="whitespace-pre-wrap text-lg leading-relaxed">{activity.description}</p>

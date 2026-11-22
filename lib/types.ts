@@ -174,6 +174,14 @@ export type Result = {
   error: string;
 };
 
+export type PartnerApplicationInput = {
+  company: string;
+  contactName: string;
+  phone: string;
+  industry: string;
+  course: string;
+};
+
 export type SignUpInput = {
   email: string;
   password: string;

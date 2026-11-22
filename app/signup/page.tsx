@@ -15,16 +15,16 @@ export default async function SignUpPage({ searchParams }: { searchParams: Promi
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr]">
       <aside className="relative hidden min-h-[40rem] overflow-hidden rounded-[1.75rem] lg:block">
-        <Image src={photos.yoga.src} alt={photos.yoga.alt} fill loading="eager" className="object-cover" sizes="24rem" />
+        <Image src={photos.hero.src} alt={photos.hero.alt} fill loading="eager" className="object-cover" sizes="24rem" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0e3328]/85 via-[#0e3328]/20 to-transparent" />
         <div className="absolute right-6 bottom-6 left-6 grid gap-2 text-white">
           <p className="font-serif text-4xl">迎向美好人生</p>
-          <p className="text-lg">免費加入俱樂部，認識據點的活動與朋友。</p>
+          <p className="text-lg">免費加入，來上課、聽講座、認識朋友。</p>
         </div>
       </aside>
       <div className="grid gap-6">
         <div className="relative h-48 overflow-hidden rounded-[1.5rem] lg:hidden">
-          <Image src={photos.yoga.src} alt={photos.yoga.alt} fill loading="eager" className="object-cover" sizes="100vw" />
+          <Image src={photos.hero.src} alt={photos.hero.alt} fill loading="eager" className="object-cover" sizes="100vw" />
         </div>
         <div className="grid gap-2">
           <p className="text-base font-medium text-[#14603a]">會員</p>

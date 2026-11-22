@@ -65,9 +65,11 @@ export const DISTRICTS: Partial<Record<(typeof CITIES)[number], string[]>> = {
   ],
 };
 
-export const INTERESTS = ["健走", "瑜珈", "太極", "講座", "伸展", "舞蹈", "養生操"] as const;
+export const INTERESTS = ["健康料理", "職場伸展", "睡眠與紓壓", "手機攝影", "數位生活", "芳療手作", "飲食營養", "講座"] as const;
 
-export const CATEGORIES = ["健走", "瑜珈", "太極", "健康講座", "講座", "據點聚會", "健康交流", "21日挑戰", "伸展", "舞蹈"] as const;
+export const CATEGORIES = ["健康料理", "職場伸展", "睡眠與紓壓", "手機攝影", "數位生活", "芳療手作", "飲食營養", "講座", "課程交流", "21日挑戰"] as const;
+
+export const PARTNER_INDUSTRIES = ["料理教室", "健身／瑜伽工作室", "營養諮詢", "診所衛教", "保健品牌", "保險", "場地方", "其他"] as const;
 
 export const DIFFICULTY_LABEL = {
   easy: "輕鬆",
@@ -76,10 +78,10 @@ export const DIFFICULTY_LABEL = {
 } as const;
 
 export const KIND_LABEL = {
-  exercise: "一起運動",
-  talk: "健康講座",
-  meetup: "據點聚會",
-  expo: "健康交流",
+  exercise: "課程",
+  talk: "講座",
+  meetup: "課程交流",
+  expo: "體驗課",
   challenge: "21日挑戰",
 } as const;
 
@@ -87,30 +89,26 @@ export const ROLE_LABEL = {
   member: "會員",
   organizer: "主辦",
   admin: "管理員",
-  branch_manager: "據點管理員",
+  branch_manager: "場地管理員",
 } as const;
 
-export const MEMBER_TYPE_LABEL = {
-  partner: "夥伴",
-  enthusiast: "愛用者",
-  public: "一般大眾",
-} as const;
+export const OPERATOR_NAME = "海連科技有限公司";
 
-export const JOIN_BUSINESS_URL = "https://www.totalswiss.com.tw/join";
-export const OFFICIAL_SITE_URL = "https://www.totalswiss.com.tw/";
-export const MEMBER_PORTAL_URL = "https://mbst.totalswiss.com/mblogin.php";
-export const GSC_PHONE = "(02)7733-0800";
-export const JOIN_BUSINESS_NOTE =
-  "「加入事業」是 Total Swiss 八馬國際事業的多層次傳銷事業機會，不是求職或雇用。加入需要推薦人，並經公司審核同意。俱樂部入會本身免費，與加入事業是兩件事。";
+export const PARTNER_RULES = [
+  "活動現場不硬性推銷，不要求參加者購買商品、課程包或保單。",
+  "不宣稱醫療效果、療效、治療或診斷，也不取代醫事人員。",
+  "不蒐集病歷、健檢或用藥資料。",
+  "課程或講座內容先給俱樂部看過，再對會員公開。",
+] as const;
 
 export const SAFETY_NOTICE =
-  "參加運動前，請確認自己今日身體狀況適合活動。若感到頭暈、胸悶、疼痛或不適，請立即停止並尋求專業協助。健康俱樂部不提供醫療服務，活動內容不是診斷、治療或復健課程。";
+  "參加課程前，請確認自己今日身體狀況適合活動。若感到頭暈、胸悶、疼痛或不適，請立即停止並尋求專業協助。健康俱樂部不提供醫療服務，活動內容不是診斷、治療或復健課程。";
 
 export const SELF_DECLARATION =
   "我已閱讀安全須知，確認今日身體狀況可以參加，並會自行留意安全。我了解這不是醫療評估。";
 
 export const MEDICAL_DISCLAIMER =
-  "本站活動、公告與挑戰僅供熟齡朋友互相邀約與生活資訊交流，不是醫療建議，不能取代醫師、物理治療師或其他醫事人員的診療，也不做任何診斷、療效或治療承諾。";
+  "本站課程、講座、公告與挑戰只供生活資訊交流，不是醫療建議，不能取代醫師、物理治療師或其他醫事人員的診療，也不做任何診斷、療效或治療承諾。";
 
 export const FRAUD_WARNING =
   "防詐提醒：健康俱樂部的工作人員絕不會要求您轉帳、操作 ATM、提供銀行密碼或一次性驗證碼。若有人這麼說，請直接拒絕並通知我們。";

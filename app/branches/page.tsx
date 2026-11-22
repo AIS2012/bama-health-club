@@ -1,10 +1,9 @@
 import Image from "next/image";
 import { PageHero } from "@/components/page-hero";
 import { BRANCHES, HOURS_NOTE, branchCounties } from "@/lib/branches";
-import { GSC_PHONE } from "@/lib/constants";
 import { photos } from "@/lib/photos";
 
-export const metadata = { title: "據點" };
+export const metadata = { title: "上課場地" };
 
 export default async function BranchesPage({
   searchParams,
@@ -15,13 +14,13 @@ export default async function BranchesPage({
   const counties = branchCounties();
   const county = params.county && counties.includes(params.county) ? params.county : "";
   const branches = BRANCHES.filter((branch) => (county ? branch.county === county : true));
-  const featured = branches[0]?.id === "taipei" ? branches[0] : null;
+  const featured = branches[0]?.id === "daan" ? branches[0] : null;
   const rest = featured ? branches.slice(1) : branches;
 
   return (
     <div className="grid gap-8">
-      <PageHero kicker="據點" title="台灣據點" image={photos.forestCouple.src} alt={photos.forestCouple.alt}>
-        以下 16 處地址來自公司官網公開的營業據點頁，供找活動與講座使用。本頁只列台灣據點。大臺北先看台北營運中心。
+      <PageHero kicker="上課場地" title="大臺北的室內教室" image={photos.hero.src} alt={photos.hero.alt}>
+        課程和講座集中在這些室內場地。以下是示範用的區域說明，方便看活動怎麼依場地整理，不是正式租約。
       </PageHero>
       <p className="rounded-[1.25rem] border border-[#9a3412] bg-[#fff7ed] px-4 py-3">{HOURS_NOTE}</p>
       <form method="get" className="grid gap-3 rounded-[1.5rem] bg-white p-4 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/10 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -41,7 +40,7 @@ export default async function BranchesPage({
       {featured ? (
         <article id={featured.id} className="grid overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_50px_-32px_rgba(14,51,40,0.65)] ring-1 ring-[#14603a]/10 md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative min-h-52">
-            <Image src={photos.gardenWalk.src} alt={photos.gardenWalk.alt} fill loading="eager" className="object-cover" sizes="(min-width: 768px) 24rem, 100vw" />
+            <Image src={photos.hero.src} alt={photos.hero.alt} fill loading="eager" className="object-cover object-[72%_42%]" sizes="(min-width: 768px) 24rem, 100vw" />
           </div>
           <div className="grid content-center gap-2 p-6 sm:p-8">
             <p className="font-medium text-[#14603a]">大臺北 · {featured.county}</p>
@@ -50,10 +49,9 @@ export default async function BranchesPage({
             <p>
               電子郵件：<a className="underline" href={`mailto:${featured.email}`}>{featured.email}</a>
             </p>
-            <p>客服電話：GSC 全球客服中心 {GSC_PHONE}</p>
             <p>
               <a className="inline-flex min-h-12 items-center font-medium text-[#0f5132] underline underline-offset-4" href={`/activities?branch=${featured.id}`}>
-                看這個據點的活動
+                看這個場地的活動
               </a>
             </p>
           </div>
@@ -68,10 +66,9 @@ export default async function BranchesPage({
             <p>
               電子郵件：<a className="underline" href={`mailto:${branch.email}`}>{branch.email}</a>
             </p>
-            <p>客服電話：GSC 全球客服中心 {GSC_PHONE}</p>
             <p>
               <a className="inline-flex min-h-12 items-center font-medium text-[#0f5132] underline underline-offset-4" href={`/activities?branch=${branch.id}`}>
-                看這個據點的活動
+                看這個場地的活動
               </a>
             </p>
           </article>

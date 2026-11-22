@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { branchById } from "@/lib/branches";
-import { CATEGORIES, CITIES, DISTRICTS, INTERESTS } from "@/lib/constants";
+import { CATEGORIES, CITIES, DISTRICTS, INTERESTS, PARTNER_INDUSTRIES } from "@/lib/constants";
 import type {
   ActivityInput,
   ChallengeInput,
   GroupInput,
+  PartnerApplicationInput,
   ProfileInput,
   SignUpInput,
 } from "@/lib/types";
@@ -53,7 +54,7 @@ export function parseSignUp(input: {
       phone: phoneSchema(),
       city: citySchema,
       district: z.string().trim().min(1),
-      interests: z.array(interestSchema).max(7),
+      interests: z.array(interestSchema).max(INTERESTS.length),
       memberType: memberTypeSchema.default("public"),
       partnerNumber: z
         .union([z.string(), z.null()])
@@ -62,12 +63,12 @@ export function parseSignUp(input: {
           const text = (value ?? "").trim();
           return text === "" ? null : text;
         })
-        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數，且先標為待公司驗證"),
+        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數"),
       homeBranchId: z
         .union([z.string(), z.null()])
         .optional()
         .transform((value) => (value ? value : null))
-        .refine(optionalBranch, "請選擇據點"),
+        .refine(optionalBranch, "請選擇上課場地"),
     })
     .refine((value) => districtOk(value.city, value.district), {
       message: "請選擇或填寫這個縣市裡的行政區",
@@ -94,7 +95,7 @@ export function parseProfile(input: {
       phone: phoneSchema(),
       city: citySchema,
       district: z.string().trim().min(1),
-      interests: z.array(interestSchema).max(7),
+      interests: z.array(interestSchema).max(INTERESTS.length),
       memberType: memberTypeSchema.default("public"),
       partnerNumber: z
         .union([z.string(), z.null()])
@@ -103,12 +104,12 @@ export function parseProfile(input: {
           const text = (value ?? "").trim();
           return text === "" ? null : text;
         })
-        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數，且先標為待公司驗證"),
+        .refine((value) => value === null || /^[A-Za-z0-9-]{3,30}$/.test(value), "編號只接受英數"),
       homeBranchId: z
         .union([z.string(), z.null()])
         .optional()
         .transform((value) => (value ? value : null))
-        .refine(optionalBranch, "請選擇據點"),
+        .refine(optionalBranch, "請選擇上課場地"),
     })
     .refine((value) => districtOk(value.city, value.district), {
       message: "請選擇或填寫這個縣市裡的行政區",
@@ -138,7 +139,7 @@ export function parseActivity(input: ActivityInput): { ok: true; data: ActivityI
       organizerVerified: z.boolean(),
       isSample: z.boolean(),
       status: z.enum(["draft", "published", "cancelled"]),
-      branchId: z.string().refine((value) => Boolean(branchById(value)), "請選擇據點"),
+      branchId: z.string().refine((value) => Boolean(branchById(value)), "請選擇上課場地"),
       speaker: z.union([z.string(), z.null()]).transform((value) => {
         const text = (value ?? "").trim();
         return text === "" ? null : text.slice(0, 40);
@@ -174,6 +175,19 @@ export function parseChallenge(input: ChallengeInput): { ok: true; data: Challen
   });
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "挑戰資料不完整" };
+  return { ok: true, data: parsed.data };
+}
+
+export function parsePartnerApplication(input: PartnerApplicationInput): { ok: true; data: PartnerApplicationInput } | { ok: false; error: string } {
+  const schema = z.object({
+    company: z.string().trim().min(2, "請填單位名稱").max(80),
+    contactName: z.string().trim().min(1, "請填聯絡人").max(40),
+    phone: z.string().trim().refine((value) => /^[0-9+\-() ]{8,20}$/.test(value), "電話格式不正確"),
+    industry: z.enum(PARTNER_INDUSTRIES, { error: "請選擇行業" }),
+    course: z.string().trim().min(10, "請用幾句話說明想開的課程或講座").max(500),
+  });
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "申請資料不完整" };
   return { ok: true, data: parsed.data };
 }
 

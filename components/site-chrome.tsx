@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteNotice } from "@/components/site-notice";
-import { FRAUD_WARNING, GSC_PHONE, JOIN_BUSINESS_NOTE, JOIN_BUSINESS_URL, MEDICAL_DISCLAIMER, MEMBER_PORTAL_URL, OFFICIAL_SITE_URL } from "@/lib/constants";
+import { FRAUD_WARNING, MEDICAL_DISCLAIMER, OPERATOR_NAME } from "@/lib/constants";
 import type { Profile } from "@/lib/types";
 
 const footerLink = "inline-flex min-h-12 items-center underline decoration-white/40 underline-offset-4 hover:decoration-white";
@@ -29,8 +29,7 @@ export function SiteChrome({
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_0.8fr_0.8fr]">
           <div className="grid content-start gap-3">
             <p className="font-serif text-3xl text-white">健康俱樂部</p>
-            <p className="text-[#d7eadc]">大臺北運動與講座。俱樂部入會免費，與加入事業分開。</p>
-            <p>GSC 全球客服中心 {GSC_PHONE}</p>
+            <p className="text-[#d7eadc]">大臺北健康課程與講座。由{OPERATOR_NAME}經營，入會免費，開放一般大眾。</p>
           </div>
           <nav aria-label="頁尾俱樂部" className="grid content-start">
             <p className="font-serif text-2xl text-white">俱樂部</p>
@@ -38,7 +37,10 @@ export function SiteChrome({
               活動
             </Link>
             <Link className={footerLink} href="/branches">
-              據點
+              上課場地
+            </Link>
+            <Link className={footerLink} href="/partners">
+              合作夥伴
             </Link>
             <Link className={footerLink} href="/groups">
               社團
@@ -49,12 +51,9 @@ export function SiteChrome({
           </nav>
           <nav aria-label="頁尾" className="grid content-start">
             <p className="font-serif text-2xl text-white">說明</p>
-            <a className={footerLink} href={OFFICIAL_SITE_URL}>
-              官網
-            </a>
-            <a className={footerLink} href={MEMBER_PORTAL_URL}>
-              會員專區
-            </a>
+            <Link className={footerLink} href="/signup">
+              免費加入
+            </Link>
             <Link className={footerLink} href="/privacy">
               隱私權政策（草稿）
             </Link>
@@ -67,12 +66,7 @@ export function SiteChrome({
           <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 text-base leading-relaxed sm:px-6">
             <p>{FRAUD_WARNING}</p>
             <p>{MEDICAL_DISCLAIMER}</p>
-            <p>{JOIN_BUSINESS_NOTE}</p>
-            <p>
-              <a className="font-medium text-white underline underline-offset-4" href={JOIN_BUSINESS_URL}>
-                加入事業
-              </a>
-            </p>
+            <p>營運者：{OPERATOR_NAME}。使用條款與隱私權政策仍是草稿，正式上線前須律師審閱。</p>
           </div>
         </div>
       </footer>

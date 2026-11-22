@@ -37,6 +37,7 @@ import {
   rsvp,
   sessionUser,
   signup,
+  submitPartnerApplication,
   updateProfile,
 } from "@/lib/demo/logic";
 import { updateDb } from "@/lib/demo/store";
@@ -163,6 +164,9 @@ export const demoRepo: Repo = {
   async updateProfile(input: ProfileInput) {
     const current = await actor();
     return updateDb((db) => updateProfile(db, current, input));
+  },
+  async submitPartnerApplication(input) {
+    return updateDb((db) => submitPartnerApplication(db, input));
   },
   async listActivities(filter) {
     return updateDb((db) => listActivities(db, filter));

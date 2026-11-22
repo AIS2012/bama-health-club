@@ -23,7 +23,7 @@ import type {
   RsvpRow,
   RsvpStatus,
 } from "@/lib/types";
-import { parseActivity, parseChallenge, parseGroup, parseProfile, parseSignUp } from "@/lib/validation";
+import { parseActivity, parseChallenge, parseGroup, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
 import { siteUrl } from "@/lib/config";
 
 const ACTIVITY_COLUMNS =
@@ -264,6 +264,20 @@ export const supabaseRepo: Repo = {
       .eq("id", user.id);
     if (error) return fail(error);
     return { ok: true, message: "資料已更新" };
+  },
+  async submitPartnerApplication(input) {
+    const parsed = parsePartnerApplication(input);
+    if (!parsed.ok) return parsed;
+    const supabase = await createClient();
+    const { error } = await supabase.from("partner_applications").insert({
+      company: parsed.data.company,
+      contact_name: parsed.data.contactName,
+      phone: parsed.data.phone,
+      industry: parsed.data.industry,
+      course: parsed.data.course,
+    });
+    if (error) return fail(error);
+    return { ok: true, message: "已收到合作申請。我們會再與您聯絡。" };
   },
   async listActivities(filter) {
     const supabase = await createClient();
@@ -643,7 +657,7 @@ export const supabaseRepo: Repo = {
   async adminSetRole(userId, role, managedBranchId) {
     const gate = await requireAdmin();
     if (!gate.ok) return gate;
-    if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位據點管理員負責的據點" };
+    if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位場地管理員負責的上課場地" };
     const supabase = await createClient();
     const { error } = await supabase
       .from("profiles")
