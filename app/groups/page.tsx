@@ -10,7 +10,7 @@ export default async function GroupsPage() {
   const groups = await repo.listGroups();
   return (
     <div className="grid gap-8">
-      <PageHero kicker="社團" title="興趣社團" image={photos.taiChi.src} alt={photos.taiChi.alt}>
+      <PageHero kicker="社團" title="興趣社團" image={photos.smile.src} alt={photos.smile.alt}>
         公開社團，會員都可以加入，並在公告欄留言。請不要張貼轉帳帳號或醫療廣告。
       </PageHero>
       {groups.length === 0 ? <p>還沒有社團。</p> : null}

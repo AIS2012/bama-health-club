@@ -77,7 +77,7 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
         <Link href="/" className="inline-flex min-h-11 min-w-0 items-center gap-2" onClick={() => setOpen(false)}>
           <span
             data-logo-slot="official"
-            title="官方標誌位置，待公司核准後替換，請勿外連官網圖檔"
+            title="標誌位置，待營運者確認後替換"
             aria-hidden="true"
             className="grid size-8 shrink-0 place-items-center rounded-full bg-[#14603a] font-serif text-lg leading-none text-white"
           >
@@ -122,7 +122,7 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
           <Link href="/" className="inline-flex min-h-12 items-center gap-3">
             <span
               data-logo-slot="official"
-              title="官方標誌位置，待公司核准後替換，請勿外連官網圖檔"
+              title="標誌位置，待營運者確認後替換"
               aria-hidden="true"
               className="grid size-12 shrink-0 place-items-center rounded-full bg-[#14603a] font-serif text-2xl leading-none text-white"
             >
@@ -130,13 +130,13 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
             </span>
             <span>
               <span className="block font-serif text-2xl leading-none text-[#0e3328]">健康俱樂部</span>
-              <span className="mt-1 block text-base text-[#3c5146]">大臺北運動與講座</span>
+              <span className="mt-1 block text-base text-[#3c5146]">大臺北健康課程與講座</span>
             </span>
           </Link>
           <div className="flex flex-nowrap items-center gap-2">
             {staff ? (
               <Link href="/admin" className="inline-flex min-h-12 items-center rounded-full bg-[#e3f3e6] px-4 font-medium whitespace-nowrap text-[#0e3328]">
-                {user?.role === "branch_manager" ? "據點活動" : "管理後台"}
+                {user?.role === "branch_manager" ? "場地活動" : "管理後台"}
               </Link>
             ) : null}
             {user ? (
@@ -183,7 +183,7 @@ export function SiteHeader({ user }: { user: { nickname: string; role: Role } | 
           <div className="mt-3 grid gap-2 border-t border-[#14603a]/15 pt-3">
             {staff ? (
               <Link href="/admin" onClick={close} className="flex min-h-14 items-center rounded-2xl px-4 text-xl font-medium text-[#0e3328] hover:bg-[#e3f3e6]">
-                {user?.role === "branch_manager" ? "據點活動" : "管理後台"}
+                {user?.role === "branch_manager" ? "場地活動" : "管理後台"}
               </Link>
             ) : null}
             {user ? (

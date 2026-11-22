@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     default: "健康俱樂部",
     template: "%s｜健康俱樂部",
   },
-  description: "健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+  description: "健康俱樂部。大臺北的室內課程與講座，開放一般大眾免費加入。不是醫療服務。",
   openGraph: {
     title: "健康俱樂部",
-    description: "健康俱樂部。夥伴、愛用者與一般大眾都能報名活動與挑戰。入會免費，不是醫療服務。",
+    description: "健康俱樂部。大臺北的室內課程與講座，開放一般大眾免費加入。不是醫療服務。",
     locale: "zh_TW",
   },
 };

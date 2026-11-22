@@ -10,7 +10,7 @@ export default async function ChallengesPage() {
   const challenges = await repo.listChallenges();
   return (
     <div className="grid gap-8">
-      <PageHero kicker="挑戰" title="小挑戰" image={photos.yoga.src} alt={photos.yoga.alt}>
+      <PageHero kicker="挑戰" title="小挑戰" image={photos.hero.src} alt={photos.hero.alt}>
         自己打卡就好。不計步數、不上傳健檢，漏一天也可以繼續。這不是療程。
       </PageHero>
       {challenges.length === 0 ? <p>目前沒有挑戰。</p> : null}

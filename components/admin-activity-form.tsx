@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { saveActivityAction } from "@/lib/actions";
 import { BRANCHES } from "@/lib/branches";
-import { CATEGORIES, CITIES } from "@/lib/constants";
+import { CATEGORIES, CITIES, KIND_LABEL } from "@/lib/constants";
+import type { ActivityKind } from "@/lib/types";
 import { isoToTaipeiInput } from "@/lib/format";
 import type { ActivityDetail } from "@/lib/types";
 
@@ -21,16 +22,16 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
         <label className="grid gap-2">
           種類
           <select name="kind" defaultValue={activity?.kind ?? "exercise"} className="h-12 rounded-lg border bg-card px-3">
-            <option value="exercise">一起運動</option>
-            <option value="talk">健康講座</option>
-            <option value="meetup">據點聚會</option>
-            <option value="expo">健康交流</option>
-            <option value="challenge">21日挑戰</option>
+            {(Object.keys(KIND_LABEL) as ActivityKind[]).map((kind) => (
+              <option key={kind} value={kind}>
+                {KIND_LABEL[kind]}
+              </option>
+            ))}
           </select>
         </label>
         <label className="grid gap-2">
           類型
-          <select name="category" defaultValue={activity?.category ?? "健走"} className="h-12 rounded-lg border bg-card px-3">
+          <select name="category" defaultValue={activity?.category ?? "健康料理"} className="h-12 rounded-lg border bg-card px-3">
             {CATEGORIES.map((item) => (
               <option key={item}>{item}</option>
             ))}
@@ -52,8 +53,8 @@ export function AdminActivityForm({ activity }: { activity?: ActivityDetail }) {
         </label>
       </div>
       <label className="grid gap-2">
-        據點
-        <select name="branch_id" defaultValue={activity?.branchId ?? "taipei"} className="h-12 rounded-lg border bg-card px-3" required>
+        上課場地
+        <select name="branch_id" defaultValue={activity?.branchId ?? "daan"} className="h-12 rounded-lg border bg-card px-3" required>
           {BRANCHES.map((branch) => (
             <option key={branch.id} value={branch.id}>
               {branch.shortName} · {branch.name}

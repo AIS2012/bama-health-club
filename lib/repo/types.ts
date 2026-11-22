@@ -11,6 +11,7 @@ import type {
   GroupListItem,
   PostItem,
   Profile,
+  PartnerApplicationInput,
   ProfileInput,
   Result,
   RsvpRow,
@@ -26,6 +27,7 @@ export type Repo = {
   consumeMagicLink(token: string): Promise<Result>;
   signOut(): Promise<void>;
   updateProfile(input: ProfileInput): Promise<Result>;
+  submitPartnerApplication(input: PartnerApplicationInput): Promise<Result>;
   listActivities(filter?: { city?: string; category?: string; branchId?: string }): Promise<ActivityListItem[]>;
   getActivity(id: string): Promise<ActivityDetail | null>;
   rsvp(activityId: string, safetyDeclared: boolean): Promise<Result>;

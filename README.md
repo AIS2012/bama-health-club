@@ -1,6 +1,6 @@
 # 健康俱樂部
 
-大臺北的運動與講座平台。夥伴、愛用者與一般大眾都可以看活動、報名或候補、加入社團、做每日打卡。管理員與據點管理員可以在後台維護內容。
+大臺北的室內課程與講座平台，由海連科技有限公司經營，不綁定單一廠商。一般大眾都可以看活動、報名或候補、加入社團、做每日打卡。管理員與場地管理員可以在後台維護內容。健康相關單位可在「合作夥伴」頁提出開課申請。
 
 目前入會免費。資料表已留會員方案與價格欄位，這一版沒有金流。全站介面是繁體中文，預設字級 18px，可切換較大、特大。
 
@@ -23,7 +23,7 @@ npm run dev
 | --- | --- | --- |
 | 會員 | member@bama.example | 陳阿姨 |
 | 管理員 | admin@bama.example | 林志工 |
-| 台北據點管理員 | branch@bama.example | 林據點 |
+| 大安場地管理員 | branch@bama.example | 林場地 |
 
 活動、社團、挑戰標題裡的「範例」是種子資料，不是正式場次。松山那一場名額是 1，用來看候補。
 
@@ -57,7 +57,8 @@ npm run build
 1. 建立 Supabase 專案。
 2. 在 SQL Editor 依序貼上並執行：
    - `supabase/migrations/20261119120000_init.sql`
-   - `supabase/migrations/20261119143000_totalswiss_branches.sql`
+   - `supabase/migrations/20261119143000_club_venues.sql`
+   - `supabase/migrations/20261122120000_partner_applications.sql`
    - `supabase/seed.sql`
 3. Authentication → Providers：開啟 Email。若要魔法連結或註冊確認信，設定寄信。Google 登入要另外貼上 Google 的 Client ID 與 Secret，重新導向網址用正式網域的 `/auth/callback`。
 4. Authentication → URL Configuration：Site URL 設成正式網址，Redirect URLs 加上本機與正式網址的 `/auth/callback`。
@@ -91,14 +92,13 @@ Supabase 模式下，排程與候補信的寄件清單需要 `SUPABASE_SERVICE_R
 
 ## 還需要公司確認
 
-- 官方標誌圖檔。頁首現在是文字與虛線框，核准後再換上，不要外連官網圖。
-- 16 處據點的營業時間。地址與公開電子信箱依官網據點頁，時間尚未寫死。
-- 夥伴編號怎麼核對。目前只保存使用者自填的編號，並標成待公司驗證。
-- 加入事業的法定揭露。頁面已說明這是多層次傳銷、需要推薦人與公司審核；正式文案請法務確認。
+- 官方標誌圖檔。頁首現在是文字，核准後再換上。
+- 上課場地的正式地址與租約。現在的地址是示範用的區域說明。
+- 海連科技有限公司的正式聯絡方式。法律頁仍是草稿。
 
 ## 這一版沒有做的事
 
-- 沒有付款、購物車、組織圖、獎金或招募排名。
+- 沒有付款或購物車。合作申請只留下聯絡資料，不在網站上販售商品。
 - Google 登入按鈕在示範模式會說明尚未連接；正式環境還要在 Supabase 打開 Google provider。
 - 沒有簡訊。
 - 法律頁是草稿。

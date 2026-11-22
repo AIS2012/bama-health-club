@@ -10,6 +10,7 @@ export function ActivityCard({ activity }: { activity: ActivityListItem }) {
         <span className="rounded-full bg-[#e3f3e6] px-3 py-1 text-base text-[#0f5132]">{activity.category}</span>
         <span className="rounded-full bg-[#eef6ea] px-3 py-1 text-base">{difficultyLabel(activity.difficulty)}</span>
         {activity.isSample ? <span className="rounded-full bg-[#fff3bf] px-3 py-1 text-base font-medium text-[#1a1200]">範例資料</span> : null}
+        {activity.speaker ? <span className="rounded-full bg-white px-3 py-1 text-base ring-1 ring-[#14603a]/20">合作講師／合作單位</span> : null}
         {activity.organizerVerified ? (
           <span className="rounded-full bg-[#e3f3e6] px-3 py-1 text-base font-medium text-[#0f5132] ring-1 ring-[#0f5132]">已驗證主辦</span>
         ) : null}
@@ -25,6 +26,7 @@ export function ActivityCard({ activity }: { activity: ActivityListItem }) {
         {activity.city}
         {activity.district} · {activity.locationName}
       </p>
+      {activity.speaker ? <p>合作講師／合作單位：{activity.speaker}</p> : null}
       <p className="font-medium">{spotsLabel(activity.goingCount, activity.capacity)}</p>
       {activity.waitlistCount > 0 ? <p>候補 {activity.waitlistCount} 人</p> : null}
       <Link

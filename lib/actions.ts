@@ -6,7 +6,7 @@ import { safeNextPath } from "@/lib/config";
 import { taipeiInputToIso } from "@/lib/format";
 import { getRepo } from "@/lib/repo";
 import { CITIES } from "@/lib/constants";
-import type { ActivityInput, ActivityKind, ActivityStatus, ChallengeInput, Difficulty, GroupInput, MemberType, Result, Role } from "@/lib/types";
+import type { ActivityInput, ActivityKind, ActivityStatus, ChallengeInput, Difficulty, GroupInput, MemberType, PartnerApplicationInput, Result, Role } from "@/lib/types";
 import { stringsFromForm, textFromForm } from "@/lib/validation";
 
 function memberTypeFrom(value: string): MemberType {
@@ -67,6 +67,20 @@ export async function updateProfileAction(_prev: Result | null, formData: FormDa
     homeBranchId: textFromForm(formData, "home_branch_id") || null,
   });
   if (result.ok) refresh(["/profile"]);
+  return result;
+}
+
+export async function partnerApplicationAction(_prev: Result | null, formData: FormData): Promise<Result> {
+  const repo = await getRepo();
+  const input: PartnerApplicationInput = {
+    company: textFromForm(formData, "company"),
+    contactName: textFromForm(formData, "contact_name"),
+    phone: textFromForm(formData, "phone"),
+    industry: textFromForm(formData, "industry"),
+    course: textFromForm(formData, "course"),
+  };
+  const result = await repo.submitPartnerApplication(input);
+  if (result.ok) refresh(["/partners"]);
   return result;
 }
 

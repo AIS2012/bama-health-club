@@ -19,10 +19,11 @@ import type {
   Result,
   RsvpRow,
   RsvpStatus,
+  PartnerApplicationInput,
   SignUpInput,
   ProfileInput,
 } from "@/lib/types";
-import { parseActivity, parseChallenge, parseGroup, parseProfile, parseSignUp } from "@/lib/validation";
+import { parseActivity, parseChallenge, parseGroup, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
 
 type UserRecord = Profile & { passwordHash: string };
 
@@ -50,6 +51,15 @@ export type DemoDb = {
   challenges: Omit<ChallengeListItem, "joined" | "checkinCount" | "checkedInToday">[];
   challengeMembers: { challengeId: string; userId: string; joinedAt: string }[];
   checkins: { id: string; challengeId: string; userId: string; checkinDate: string; createdAt: string }[];
+  partnerApplications: {
+    id: string;
+    company: string;
+    contactName: string;
+    phone: string;
+    industry: string;
+    course: string;
+    createdAt: string;
+  }[];
   reports: {
     id: string;
     reporterId: string;
@@ -70,7 +80,7 @@ export type DemoDb = {
   }[];
 };
 
-const SAMPLE_CONTACT = "(02)7733-0800（GSC 全球客服中心；範例場次請仍向現場主辦確認）";
+const SAMPLE_CONTACT = "02-0000-0000（範例電話，請改聯絡現場主辦）";
 
 function publicUser(user: UserRecord): Profile {
   const { passwordHash, ...profile } = user;
@@ -131,13 +141,13 @@ export function createSeedDb(now = new Date()): DemoDb {
       phone: null,
       city: "台北市",
       district: "中正區",
-      interests: ["講座", "健走"],
+      interests: ["講座", "健康料理"],
       role: "admin",
       verified: true,
       planId: "free",
-      memberType: "partner",
+      memberType: "public",
       partnerNumber: null,
-      homeBranchId: "taipei",
+      homeBranchId: "daan",
       managedBranchId: null,
       createdAt,
       passwordHash,
@@ -149,13 +159,13 @@ export function createSeedDb(now = new Date()): DemoDb {
       phone: null,
       city: "台北市",
       district: "大安區",
-      interests: ["健走", "瑜珈"],
+      interests: ["健康料理", "職場伸展"],
       role: "member",
       verified: false,
       planId: "free",
-      memberType: "enthusiast",
-      partnerNumber: "A123456",
-      homeBranchId: "taipei",
+      memberType: "public",
+      partnerNumber: null,
+      homeBranchId: "daan",
       managedBranchId: null,
       createdAt,
       passwordHash,
@@ -167,7 +177,7 @@ export function createSeedDb(now = new Date()): DemoDb {
       phone: null,
       city: "台北市",
       district: "信義區",
-      interests: ["太極"],
+      interests: ["職場伸展"],
       role: "member",
       verified: true,
       planId: "free",
@@ -181,18 +191,18 @@ export function createSeedDb(now = new Date()): DemoDb {
     {
       id: "user-branch",
       email: "branch@bama.example",
-      nickname: "林據點",
+      nickname: "林場地",
       phone: null,
       city: "台北市",
-      district: "中正區",
+      district: "大安區",
       interests: ["講座"],
       role: "branch_manager",
       verified: true,
       planId: "free",
-      memberType: "partner",
+      memberType: "public",
       partnerNumber: null,
-      homeBranchId: "taipei",
-      managedBranchId: "taipei",
+      homeBranchId: "daan",
+      managedBranchId: "daan",
       createdAt,
       passwordHash,
     },
@@ -206,7 +216,7 @@ export function createSeedDb(now = new Date()): DemoDb {
       speaker?: string | null;
     },
   ): ActivityDetail => {
-    const branchId = partial.branchId ?? "taipei";
+    const branchId = partial.branchId ?? "daan";
     return {
       ...partial,
       branchId,
@@ -224,17 +234,18 @@ export function createSeedDb(now = new Date()): DemoDb {
   const activities: ActivityDetail[] = [
     makeActivity({
       id: "act-daan",
-      title: "大安森林公園晨間健走",
+      title: "大安健康料理教室",
       kind: "exercise",
-      category: "健走",
-      description: "【範例活動】在森林公園噴水池集合，沿著園內步道輕鬆走約 60 分鐘。可以聊天，步調由自己決定。這不是訓練課程，也不紀錄心率或步數。",
-      startsAt: atTaipei(2, 7, 30, now),
+      category: "健康料理",
+      speaker: "示範料理教室（虛構） · 林講師",
+      description: "【範例活動】在室內教室一起備料、組裝一份簡單早餐。可聊天，步調由自己決定。不談食療效果，也不推銷食材。",
+      startsAt: atTaipei(2, 10, 0, now),
       minutes: 90,
-      locationName: "大安森林公園噴水池",
-      address: "臺北市大安區新生南路二段 1 號",
-      city: "臺北市",
+      locationName: "大安健康教室",
+      address: "台北市大安區（範例場地）",
+      city: "台北市",
       district: "大安區",
-      capacity: 25,
+      capacity: 16,
       difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
@@ -244,18 +255,20 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-banqiao",
-      title: "板橋公園太極拳",
+      title: "板橋職場伸展與體態",
       kind: "exercise",
-      category: "太極",
-      description: "【範例活動】由志工帶大家做慢速太極暖身，站著或坐著都可以。不強調招式標準，也不宣稱有療效。",
-      startsAt: atTaipei(3, 8, 0, now),
-      minutes: 75,
-      locationName: "板橋 435 藝文特區草坪",
-      address: "新北市板橋區民生路三段",
+      category: "職場伸展",
+      branchId: "banqiao",
+      speaker: "示範健身工作室（虛構） · 陳教練",
+      description: "【範例活動】坐著或站著做肩頸與腰背的一般伸展，穿著寬鬆衣服即可。這不是復健或治療，疼痛就停下來。",
+      startsAt: atTaipei(3, 19, 0, now),
+      minutes: 60,
+      locationName: "板橋室內教室",
+      address: "新北市板橋區（範例場地）",
       city: "新北市",
       district: "板橋區",
-      capacity: 20,
-      difficulty: "moderate",
+      capacity: 18,
+      difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
       organizerVerified: true,
@@ -264,18 +277,20 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-neihu",
-      title: "內湖社區瑜珈",
-      kind: "exercise",
-      category: "瑜珈",
-      description: "【範例活動】使用椅子輔助的伸展，穿著寬鬆衣服即可。這是同好聚會，不是復健或治療。",
-      startsAt: atTaipei(4, 9, 30, now),
-      minutes: 60,
-      locationName: "內湖運動中心",
-      address: "臺北市內湖區洲子街 12 號",
-      city: "臺北市",
+      title: "內湖芳療手作",
+      kind: "meetup",
+      category: "芳療手作",
+      branchId: "neihu",
+      speaker: "示範手作教室（虛構） · 王老師",
+      description: "【範例活動】用手邊材料做一份香味小物，帶回家即可。這是手作體驗，不是治療，也不保證舒緩效果。",
+      startsAt: atTaipei(4, 14, 0, now),
+      minutes: 90,
+      locationName: "內湖手作教室",
+      address: "台北市內湖區（範例場地）",
+      city: "台北市",
       district: "內湖區",
-      capacity: 15,
-      difficulty: "moderate",
+      capacity: 12,
+      difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
       organizerVerified: true,
@@ -284,17 +299,18 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-zhongzheng",
-      title: "熟齡防詐與社區健康講座",
+      title: "睡眠與紓壓講座",
       kind: "talk",
-      category: "健康講座",
-      speaker: "志工講師（範例，非產品說明）",
-      description: "【範例活動】聊聊常見詐騙話術，以及怎麼一起運動、預防跌倒。不談產品效果，也不診斷疾病。",
+      category: "睡眠與紓壓",
+      branchId: "zhongshan",
+      speaker: "示範衛教講師（虛構） · 周講師",
+      description: "【範例活動】聊聊一般的作息與放鬆習慣。不診斷睡眠問題，不開立處置，也不介紹產品效果。",
       startsAt: atTaipei(5, 14, 0, now),
-      minutes: 120,
-      locationName: "紀州庵文學森林",
-      address: "臺北市中正區同安街 107 號",
-      city: "臺北市",
-      district: "中正區",
+      minutes: 90,
+      locationName: "中山課程空間",
+      address: "台北市中山區（範例場地）",
+      city: "台北市",
+      district: "中山區",
       capacity: 40,
       difficulty: "easy",
       organizerId: "user-admin",
@@ -305,17 +321,19 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-tamsui",
-      title: "淡水河岸健走",
-      kind: "exercise",
-      category: "健走",
-      description: "【範例活動】沿金色水岸平坦步道往返，中途可隨時休息。請自備飲水，天氣不佳會在社團公告改期。",
-      startsAt: atTaipei(6, 16, 0, now),
+      title: "信義飲食營養常識講座",
+      kind: "talk",
+      category: "飲食營養",
+      branchId: "xinyi",
+      speaker: "示範營養諮詢（虛構） · 吳講師",
+      description: "【範例活動】用日常例子談均衡飲食的常識。不是個人營養處方，不評估體態，也不推銷食品。",
+      startsAt: atTaipei(6, 15, 0, now),
       minutes: 90,
-      locationName: "淡水金色水岸",
-      address: "新北市淡水區中正路一段",
-      city: "新北市",
-      district: "淡水區",
-      capacity: 30,
+      locationName: "信義講座廳",
+      address: "台北市信義區（範例場地）",
+      city: "台北市",
+      district: "信義區",
+      capacity: 36,
       difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
@@ -325,16 +343,18 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-songshan",
-      title: "松山車站暖身健走（範例額滿）",
+      title: "松山手機攝影課（範例額滿）",
       kind: "exercise",
-      category: "健走",
-      description: "【範例活動】這場名額刻意設為 1，用來示範額滿後的候補。非正式場次。",
-      startsAt: atTaipei(1, 8, 0, now),
-      minutes: 60,
-      locationName: "松山車站南出口",
-      address: "臺北市信義區松山路 11 號",
-      city: "臺北市",
-      district: "信義區",
+      category: "手機攝影",
+      branchId: "songshan",
+      speaker: "示範數位教室（虛構） · 張老師",
+      description: "【範例活動】用自己的手機練習構圖。名額刻意設為 1，用來示範額滿後的候補。非正式場次。",
+      startsAt: atTaipei(1, 13, 30, now),
+      minutes: 75,
+      locationName: "松山料理教室",
+      address: "台北市松山區（範例場地）",
+      city: "台北市",
+      district: "松山區",
       capacity: 1,
       difficulty: "easy",
       organizerId: "user-admin",
@@ -345,18 +365,19 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-taichung",
-      title: "台中據點週會（範例）",
-      kind: "meetup",
-      category: "據點聚會",
-      branchId: "taichung",
-      description: "【範例活動】在台中據點碰面，一起走走、交流本週講座時間。不是產品說明會，也不保證任何效果。",
+      title: "中山數位生活課",
+      kind: "exercise",
+      category: "數位生活",
+      branchId: "zhongshan",
+      speaker: "示範數位教室（虛構） · 張老師",
+      description: "【範例活動】練習手機裡常用的設定，例如字級、相簿和防詐提醒。不代辦金融操作，也不要求安裝來路不明的程式。",
       startsAt: atTaipei(7, 10, 0, now),
       minutes: 90,
-      locationName: "台中中清營運中心",
-      address: "404 台中市北區中清路一段581號",
-      city: "台中市",
-      district: "北區",
-      capacity: 30,
+      locationName: "中山課程空間",
+      address: "台北市中山區（範例場地）",
+      city: "台北市",
+      district: "中山區",
+      capacity: 20,
       difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
@@ -366,18 +387,18 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-kaohsiung",
-      title: "高雄健康交流日（範例）",
-      kind: "expo",
-      category: "健康交流",
-      branchId: "kaohsiung",
-      description: "【範例活動】朋友一起的交流日，可認識據點與俱樂部活動。沒有療效展示，也不推銷療程。",
+      title: "板橋課程交流",
+      kind: "meetup",
+      category: "課程交流",
+      branchId: "banqiao",
+      description: "【範例活動】會員互相認識接下來的課程與講座。沒有商品展示，也不做療效說明。",
       startsAt: atTaipei(8, 13, 30, now),
-      minutes: 180,
-      locationName: "高雄營運中心",
-      address: "803009 高雄市前金區五福三路21號3樓",
-      city: "高雄市",
-      district: "前金區",
-      capacity: 80,
+      minutes: 90,
+      locationName: "板橋室內教室",
+      address: "新北市板橋區（範例場地）",
+      city: "新北市",
+      district: "板橋區",
+      capacity: 24,
       difficulty: "easy",
       organizerId: "user-admin",
       organizerName: "林志工",
@@ -387,17 +408,16 @@ export function createSeedDb(now = new Date()): DemoDb {
     }),
     makeActivity({
       id: "act-taoyuan-21",
-      title: "桃園 21 日一起動起來（範例）",
+      title: "大安 21 日生活節奏說明",
       kind: "challenge",
       category: "21日挑戰",
-      branchId: "taoyuan",
-      description: "【範例活動】說明如何參加 21 天自己打卡的小挑戰。不紀錄飲食或產品使用，也不上傳健檢。",
+      description: "【範例活動】說明怎麼參加 21 天自己打卡。不紀錄飲食或產品使用，也不上傳健檢。",
       startsAt: atTaipei(4, 15, 0, now),
       minutes: 60,
-      locationName: "桃園分公司",
-      address: "330 桃園市桃園區成功路一段37號1樓",
-      city: "桃園市",
-      district: "桃園區",
+      locationName: "大安健康教室",
+      address: "台北市大安區（範例場地）",
+      city: "台北市",
+      district: "大安區",
       capacity: 25,
       difficulty: "easy",
       organizerId: "user-admin",
@@ -427,23 +447,23 @@ export function createSeedDb(now = new Date()): DemoDb {
     groups: [
       {
         id: "grp-walk",
-        name: "大安健走同好會",
-        description: "【範例社團】住在大安、信義附近，想找人一起散步的朋友。公告只用來約時間，不討論病情。",
-        interest: "健走",
+        name: "大安料理同好",
+        description: "【範例社團】住在大安附近，想約人一起上課做菜的朋友。公告只用來約時間。",
+        interest: "健康料理",
         city: "臺北市",
         isSample: true,
       },
       {
         id: "grp-taiji",
-        name: "板橋太極晨練",
-        description: "【範例社團】新北板橋的慢速太極同好。下雨改室內，會寫在公告。",
-        interest: "太極",
+        name: "板橋伸展同好",
+        description: "【範例社團】新北板橋的職場伸展同好。改期會寫在公告。這不是復健班。",
+        interest: "職場伸展",
         city: "新北市",
         isSample: true,
       },
       {
         id: "grp-talk",
-        name: "熟齡講座交流",
+        name: "講座交流",
         description: "【範例社團】分享公開講座與防詐資訊。請不要張貼轉帳帳號或來路不明連結。",
         interest: "講座",
         city: null,
@@ -462,7 +482,7 @@ export function createSeedDb(now = new Date()): DemoDb {
         authorId: "user-admin",
         authorName: "林志工",
         authorVerified: true,
-        body: "【範例公告】本週健走仍在公園噴水池集合，請穿防滑鞋。若臨時不適，不用勉強到場。",
+        body: "【範例公告】本週料理課仍在大安健康教室，請穿方便活動的衣服。若臨時不適，不用勉強到場。",
         status: "visible",
         createdAt,
       },
@@ -480,18 +500,18 @@ export function createSeedDb(now = new Date()): DemoDb {
     challenges: [
       {
         id: "ch-walk",
-        title: "21 天健走挑戰",
-        description: "【範例挑戰】連續 21 天，每天出門走一走或在家原地踏步即可打卡。不計步數、不上傳健檢資料，漏一天也可以繼續。",
+        title: "21 天生活節奏",
+        description: "【範例挑戰】連續 21 天，每天為自己做一件很小的生活安排即可打卡。不計步、不上傳健檢，漏一天也可以繼續。",
         durationDays: 21,
-        category: "健走",
+        category: "21日挑戰",
         isSample: true,
       },
       {
         id: "ch-stretch",
-        title: "14 天伸展挑戰",
-        description: "【範例挑戰】每天做 10 分鐘自己覺得舒服的伸展。這不是復健處方，疼痛就停下來。",
+        title: "14 天肩頸放鬆",
+        description: "【範例挑戰】每天做 10 分鐘自己覺得舒服的肩頸活動。這不是復健處方，疼痛就停下來。",
         durationDays: 14,
-        category: "伸展",
+        category: "職場伸展",
         isSample: true,
       },
     ],
@@ -499,7 +519,20 @@ export function createSeedDb(now = new Date()): DemoDb {
     checkins: [],
     reports: [],
     notifications: [],
+    partnerApplications: [],
   };
+}
+
+export function submitPartnerApplication(db: DemoDb, input: PartnerApplicationInput): Result {
+  const parsed = parsePartnerApplication(input);
+  if (!parsed.ok) return parsed;
+  if (!db.partnerApplications) db.partnerApplications = [];
+  db.partnerApplications.push({
+    id: randomToken().slice(0, 16),
+    ...parsed.data,
+    createdAt: new Date().toISOString(),
+  });
+  return { ok: true, message: "已收到合作申請。示範模式只存在這台電腦，不會真的寄出。" };
 }
 
 export function userByEmail(db: DemoDb, email: string) {
@@ -875,11 +908,11 @@ export function adminSaveActivity(db: DemoDb, actor: Profile | null, input: Acti
   const scoped = user.role === "branch_manager" ? { ...input, branchId: user.managedBranchId ?? "" } : input;
   if (user.role === "branch_manager" && id) {
     const existing = db.activities.find((item) => item.id === id);
-    if (!existing || existing.branchId !== user.managedBranchId) return { ok: false, error: "只能管理自己據點的活動" };
+    if (!existing || existing.branchId !== user.managedBranchId) return { ok: false, error: "只能管理自己場地的活動" };
   }
   const parsed = parseActivity(scoped);
   if (!parsed.ok) return parsed;
-  if (!canManageBranch(user, parsed.data.branchId)) return { ok: false, error: "只能管理自己據點的活動" };
+  if (!canManageBranch(user, parsed.data.branchId)) return { ok: false, error: "只能管理自己場地的活動" };
   if (id) {
     const activity = db.activities.find((item) => item.id === id);
     if (!activity) return { ok: false, error: "找不到活動" };
@@ -903,7 +936,7 @@ export function adminListRsvps(db: DemoDb, actor: Profile | null, activityId: st
   const user = requireUser(actor);
   if (!isProfile(user)) return user;
   const activity = db.activities.find((item) => item.id === activityId);
-  if (!activity || !canManageBranch(user, activity.branchId)) return { ok: false, error: "只能查看自己據點的報名" };
+  if (!activity || !canManageBranch(user, activity.branchId)) return { ok: false, error: "只能查看自己場地的報名" };
   return db.rsvps
     .filter((item) => item.activityId === activityId)
     .map((item) => {
@@ -992,7 +1025,7 @@ export function adminSetRole(
     const otherAdmins = db.users.filter((item) => item.role === "admin" && item.id !== user.id).length;
     if (otherAdmins === 0) return { ok: false, error: "至少需要一位管理員" };
   }
-  if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位據點管理員負責的據點" };
+  if (role === "branch_manager" && !branchById(managedBranchId)) return { ok: false, error: "請指定這位場地管理員負責的上課場地" };
   user.role = role;
   user.managedBranchId = role === "branch_manager" ? managedBranchId : null;
   return { ok: true, message: "角色已更新" };

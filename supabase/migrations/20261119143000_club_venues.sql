@@ -1,4 +1,4 @@
--- 台灣據點、會員身分與據點管理員。不改既有報名流程。
+-- 上課場地、會員欄位與場地管理員。不改既有報名流程。
 
 create table public.branches (
   id text primary key,
@@ -11,7 +11,7 @@ create table public.branches (
   hours_note text not null
 );
 
-comment on table public.branches is '台灣據點。地址來自官網公開頁，營業時間待公司確認。';
+comment on table public.branches is '大臺北室內上課場地。示範地址不是正式租約。';
 
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check
@@ -24,7 +24,7 @@ alter table public.profiles
   add column home_branch_id text references public.branches (id),
   add column managed_branch_id text references public.branches (id);
 
-comment on column public.profiles.partner_number is '自我填寫的夥伴或會員編號。預設未驗證，本系統不對接公司名冊。';
+comment on column public.profiles.partner_number is '舊欄位，新註冊不再蒐集。';
 
 alter table public.activities drop constraint if exists activities_kind_check;
 alter table public.activities add constraint activities_kind_check

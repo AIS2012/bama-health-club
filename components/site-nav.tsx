@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 const links = [
   { href: "/", label: "首頁" },
   { href: "/activities", label: "活動" },
-  { href: "/branches", label: "據點" },
+  { href: "/branches", label: "上課場地" },
+  { href: "/partners", label: "合作夥伴" },
   { href: "/groups", label: "社團" },
   { href: "/challenges", label: "挑戰" },
 ];
