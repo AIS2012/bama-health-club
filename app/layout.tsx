@@ -1,26 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_TC, Noto_Serif_TC } from "next/font/google";
 import { cookies } from "next/headers";
 import { SiteChrome } from "@/components/site-chrome";
 import { isDemoMode } from "@/lib/config";
 import { getRepo } from "@/lib/repo";
 import "./globals.css";
 
-const noto = Noto_Sans_TC({
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-noto",
-  preload: false,
-});
-
-const notoSerif = Noto_Serif_TC({
-  weight: ["600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-noto-serif",
-  preload: false,
-});
+const fontStylesheet =
+  "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap";
 
 export const metadata: Metadata = {
   title: {
@@ -50,7 +36,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const font = scale === "lg" || scale === "xl" ? scale : undefined;
 
   return (
-    <html lang="zh-Hant" data-font={font} className={`${noto.variable} ${notoSerif.variable}`}>
+    <html lang="zh-Hant" data-font={font}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href={fontStylesheet} rel="stylesheet" />
+      </head>
       <body className="flex min-h-screen flex-col antialiased">
         <SiteChrome user={user} demo={isDemoMode()}>
           {children}
