@@ -18,6 +18,7 @@ import {
   consumeMagicLink,
   createMagicLink,
   createPost,
+  completeLineProfile,
   createSession,
   destroySession,
   dueReminders,
@@ -42,6 +43,7 @@ import {
 } from "@/lib/demo/logic";
 import { updateDb } from "@/lib/demo/store";
 import { magicLinkMessage, reminderMessage, rsvpMessage, sendEmail } from "@/lib/email";
+import { isPlaceholderEmail } from "@/lib/line";
 import type { Repo } from "@/lib/repo/types";
 import type { Profile, ProfileInput, SignUpInput } from "@/lib/types";
 
@@ -73,6 +75,7 @@ async function actor() {
 async function notifyRsvp(user: Profile, activityId: string, status: "going" | "waitlist") {
   const activity = await updateDb((db) => db.activities.find((item) => item.id === activityId) ?? null);
   if (!activity) return;
+  if (isPlaceholderEmail(user.email)) return;
   const message = rsvpMessage({
     nickname: user.nickname,
     title: activity.title,
@@ -164,6 +167,10 @@ export const demoRepo: Repo = {
   async updateProfile(input: ProfileInput) {
     const current = await actor();
     return updateDb((db) => updateProfile(db, current, input));
+  },
+  async completeLineProfile(input) {
+    const current = await actor();
+    return updateDb((db) => completeLineProfile(db, current, input));
   },
   async submitPartnerApplication(input) {
     return updateDb((db) => submitPartnerApplication(db, input));

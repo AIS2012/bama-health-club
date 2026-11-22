@@ -17,7 +17,7 @@ npm run dev
 
 瀏覽器打開 [http://127.0.0.1:43123](http://127.0.0.1:43123)。
 
-沒有設定 Supabase 時，自動進入**本機示範模式**。資料寫在 `.data/demo-db.json`（不會進版控）。示範帳號密碼都是 `Demo1234!`：
+沒有設定 Supabase 時，自動進入**本機示範模式**。資料寫在 `.data/demo-db.json`（不會進版控）。會員用 LINE 加入；沒有 `LINE_CHANNEL_ID` 時，綠色按鈕是標明「示範」的模擬登入。工作人員示範帳號密碼都是 `Demo1234!`：
 
 | 角色 | 信箱 | 暱稱 |
 | --- | --- | --- |
@@ -59,6 +59,7 @@ npm run build
    - `supabase/migrations/20261119120000_init.sql`
    - `supabase/migrations/20261119143000_club_venues.sql`
    - `supabase/migrations/20261122120000_partner_applications.sql`
+   - `supabase/migrations/20261122153000_line_members.sql`
    - `supabase/seed.sql`
 3. Authentication → Providers：開啟 Email。若要魔法連結或註冊確認信，設定寄信。Google 登入要另外貼上 Google 的 Client ID 與 Secret，重新導向網址用正式網域的 `/auth/callback`。
 4. Authentication → URL Configuration：Site URL 設成正式網址，Redirect URLs 加上本機與正式網址的 `/auth/callback`。

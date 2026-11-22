@@ -23,9 +23,13 @@ import type {
   SignUpInput,
   ProfileInput,
 } from "@/lib/types";
-import { parseActivity, parseChallenge, parseGroup, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
+import { parseActivity, parseChallenge, parseGroup, parseLineProfile, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
 
-type UserRecord = Profile & { passwordHash: string };
+type UserRecord = Omit<Profile, "lineUserId" | "lineConsent"> & {
+  passwordHash: string;
+  lineUserId?: string | null;
+  lineConsent?: boolean;
+};
 
 type RsvpRecord = {
   id: string;
@@ -83,9 +87,14 @@ export type DemoDb = {
 const SAMPLE_CONTACT = "02-0000-0000（範例電話，請改聯絡現場主辦）";
 
 function publicUser(user: UserRecord): Profile {
-  const { passwordHash, ...profile } = user;
+  const { passwordHash, lineUserId, lineConsent, ...profile } = user;
   void passwordHash;
-  return profile;
+  const id = lineUserId ?? null;
+  return {
+    ...profile,
+    lineUserId: id,
+    lineConsent: id ? Boolean(lineConsent) : true,
+  };
 }
 
 function goingCount(db: DemoDb, activityId: string) {
@@ -533,6 +542,54 @@ export function submitPartnerApplication(db: DemoDb, input: PartnerApplicationIn
     createdAt: new Date().toISOString(),
   });
   return { ok: true, message: "已收到合作申請。示範模式只存在這台電腦，不會真的寄出。" };
+}
+
+export function loginWithLine(db: DemoDb, input: { lineUserId: string; displayName: string }, now = new Date()): { user: Profile; needsProfile: boolean } {
+  let record = db.users.find((user) => user.lineUserId === input.lineUserId);
+  if (!record) {
+    record = {
+      id: `line-${input.lineUserId}`.replace(/[^A-Za-z0-9-]/g, "").slice(0, 40),
+      email: `line.${input.lineUserId.replace(/[^A-Za-z0-9]/g, "").slice(0, 64) || "member"}@members.club.invalid`,
+      nickname: input.displayName,
+      phone: null,
+      city: "台北市",
+      district: "未填",
+      interests: [],
+      role: "member",
+      verified: false,
+      planId: "free",
+      memberType: "public",
+      partnerNumber: null,
+      homeBranchId: null,
+      managedBranchId: null,
+      createdAt: now.toISOString(),
+      passwordHash: hashPassword(randomToken()),
+      lineUserId: input.lineUserId,
+      lineConsent: false,
+    };
+    db.users.push(record);
+  }
+  const user = publicUser(record);
+  return { user, needsProfile: !user.lineConsent };
+}
+
+export function completeLineProfile(
+  db: DemoDb,
+  actor: Profile | null,
+  raw: { nickname: string; phone: string | null; areaId: string | null; consent: boolean },
+): Result {
+  const user = requireUser(actor);
+  if (!isProfile(user)) return user;
+  const parsed = parseLineProfile(raw);
+  if (!parsed.ok) return parsed;
+  const record = db.users.find((item) => item.id === user.id);
+  if (!record) return { ok: false, error: "找不到會員" };
+  record.nickname = parsed.data.nickname;
+  record.phone = parsed.data.phone;
+  record.city = parsed.data.city;
+  record.district = parsed.data.district;
+  record.lineConsent = true;
+  return { ok: true, message: "已儲存，可以報名活動了" };
 }
 
 export function userByEmail(db: DemoDb, email: string) {
