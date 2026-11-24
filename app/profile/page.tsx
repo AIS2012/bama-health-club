@@ -1,12 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ActionForm } from "@/components/action-form";
-import { MemberFields } from "@/components/member-fields";
-import { Button } from "@/components/ui/button";
-import { updateProfileAction } from "@/lib/actions";
+import { LineProfileForm } from "@/components/line-profile-form";
+import { UNSET_DISTRICT } from "@/lib/areas";
 import { ROLE_LABEL } from "@/lib/constants";
-import { branchById } from "@/lib/branches";
+import { needsLineProfile } from "@/lib/line";
 import { photos } from "@/lib/photos";
 import { getRepo } from "@/lib/repo";
 
@@ -15,7 +13,8 @@ export const metadata = { title: "會員資料" };
 export default async function ProfilePage() {
   const repo = await getRepo();
   const user = await repo.getSessionUser();
-  if (!user) redirect("/login?next=/profile");
+  if (!user) redirect("/signup?next=/profile");
+  if (needsLineProfile(user)) redirect("/signup/profile?next=/profile");
   return (
     <div className="mx-auto grid max-w-2xl gap-6">
       <div className="relative h-44 overflow-hidden rounded-[1.75rem]">
@@ -25,23 +24,12 @@ export default async function ProfilePage() {
         <p className="text-base font-medium text-[#14603a]">會員資料</p>
         <h1 className="text-4xl sm:text-5xl">您好，{user.nickname}</h1>
         <p>
-          {user.email} · {ROLE_LABEL[user.role]} · 俱樂部免費會員
+          {user.lineUserId ? "LINE 會員" : user.email} · {ROLE_LABEL[user.role]} · 俱樂部免費會員
           {user.verified ? " · 已驗證主辦身分" : ""}
         </p>
-        {user.homeBranchId ? <p>常去的上課場地：{branchById(user.homeBranchId)?.name ?? "上課場地"}</p> : null}
-        <p>請確認行政區，我們會用它幫您看附近的活動。電話可以留空。</p>
+        <p>{user.district === UNSET_DISTRICT ? "常去區域還沒填。" : `常去區域：${user.city}${user.district}`} 電話可以留空。</p>
       </div>
-      <ActionForm action={updateProfileAction} className="rounded-[1.5rem] bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/10 sm:p-6">
-        <MemberFields
-          nickname={user.nickname}
-          phone={user.phone ?? ""}
-          city={user.city}
-          district={user.district}
-          interests={user.interests}
-          homeBranchId={user.homeBranchId ?? ""}
-        />
-        <Button type="submit">儲存</Button>
-      </ActionForm>
+      <LineProfileForm user={user} next="/profile" />
       <p>
         <Link className="inline-flex min-h-12 items-center font-medium text-[#0f5132] underline underline-offset-4" href="/activities">
           去看看活動

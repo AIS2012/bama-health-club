@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/action-form";
+import { LineLoginButton } from "@/components/line-login-button";
 import { ReportButton } from "@/components/report-button";
 import { cancelRsvpAction, rsvpAction } from "@/lib/actions";
-import { MEDICAL_DISCLAIMER, SAFETY_NOTICE, SELF_DECLARATION } from "@/lib/constants";
+import { MEDICAL_DISCLAIMER, SAFETY_NOTICE } from "@/lib/constants";
 import { difficultyLabel, formatTaipei, kindLabel, spotsLabel } from "@/lib/format";
+import { lineConfigured, needsLineProfile } from "@/lib/line";
 import { getRepo } from "@/lib/repo";
 import { Button } from "@/components/ui/button";
 
@@ -61,35 +63,36 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         <p>{MEDICAL_DISCLAIMER}</p>
       </section>
 
-      <section className="grid gap-3 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
+      <section className="grid gap-4 rounded-xl bg-white p-5 shadow-[0_16px_40px_-28px_rgba(14,51,40,0.55)] ring-1 ring-[#14603a]/12">
         <h2 className="text-2xl font-bold">報名</h2>
         {!user ? (
-          <p>
-            請先{" "}
-            <Link className="underline" href={`/login?next=/activities/${activity.id}`}>
-              登入
-            </Link>{" "}
-            再報名。
-          </p>
+          <>
+            <p className="text-xl">用 LINE 加入後，按一下就能報名。不用電子信箱。</p>
+            <LineLoginButton href={`/signup?next=${encodeURIComponent(`/activities/${activity.id}`)}`} demo={!lineConfigured()} />
+          </>
         ) : null}
-        {user && activity.myStatus ? (
+        {user && needsLineProfile(user) ? (
+          <Link href={`/signup/profile?next=${encodeURIComponent(`/activities/${activity.id}`)}`} className="inline-flex min-h-16 items-center justify-center rounded-full bg-[#14603a] px-6 text-xl font-bold text-white">
+            先完成會員資料
+          </Link>
+        ) : null}
+        {user && !needsLineProfile(user) && activity.myStatus ? (
           <ActionForm action={cancelRsvpAction}>
             <input type="hidden" name="activity_id" value={activity.id} />
-            <p className="text-lg font-medium">{activity.myStatus === "going" ? "您已報名這場活動。" : "您目前在候補名單。"}</p>
-            <Button type="submit" variant="outline">
+            <p className="text-xl font-medium">{activity.myStatus === "going" ? "您已報名這場活動。" : "您目前在候補名單。"}</p>
+            <Button type="submit" variant="outline" className="min-h-14 text-lg">
               取消報名
             </Button>
           </ActionForm>
         ) : null}
-        {user && !activity.myStatus ? (
+        {user && !needsLineProfile(user) && !activity.myStatus ? (
           <ActionForm action={rsvpAction}>
             <input type="hidden" name="activity_id" value={activity.id} />
-            <label className="flex min-h-12 items-start gap-3">
-              <input type="checkbox" name="safety" className="mt-1 size-6 accent-[#14603a]" required />
-              <span>{SELF_DECLARATION}</span>
-            </label>
-            <Button type="submit" disabled={started || activity.status !== "published"}>
-              {activity.goingCount >= activity.capacity ? "登記候補" : "確認報名"}
+            <input type="hidden" name="safety" value="on" />
+            <p className="text-xl">按下報名，表示您已閱讀上面的安全須知，今天可以參加。</p>
+            <p>之後會用 LINE 官方帳號提醒上課時間。這一版只先記下報名，還沒有寄出提醒。</p>
+            <Button type="submit" disabled={started || activity.status !== "published"} className="min-h-16 text-xl">
+              {activity.goingCount >= activity.capacity ? "登記候補" : "報名"}
             </Button>
             {started || activity.status !== "published" ? <p>這場活動目前不能報名。</p> : null}
           </ActionForm>

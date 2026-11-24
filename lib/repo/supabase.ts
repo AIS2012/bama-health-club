@@ -23,7 +23,8 @@ import type {
   RsvpRow,
   RsvpStatus,
 } from "@/lib/types";
-import { parseActivity, parseChallenge, parseGroup, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
+import { isPlaceholderEmail } from "@/lib/line";
+import { parseActivity, parseChallenge, parseGroup, parseLineProfile, parsePartnerApplication, parseProfile, parseSignUp } from "@/lib/validation";
 import { siteUrl } from "@/lib/config";
 
 const ACTIVITY_COLUMNS =
@@ -77,6 +78,8 @@ function asProfile(value: unknown): Profile | null {
     partnerNumber: typeof row.partner_number === "string" && row.partner_number ? row.partner_number : null,
     homeBranchId: typeof row.home_branch_id === "string" ? row.home_branch_id : null,
     managedBranchId: typeof row.managed_branch_id === "string" ? row.managed_branch_id : null,
+    lineUserId: typeof row.line_user_id === "string" && row.line_user_id ? row.line_user_id : null,
+    lineConsent: typeof row.line_user_id === "string" && row.line_user_id ? Boolean(row.line_consent_at) : true,
   };
 }
 
@@ -140,6 +143,7 @@ async function requireAdmin() {
 }
 
 async function notifyRsvp(user: Profile, activityId: string, status: "going" | "waitlist", title: string, startsAt: string, locationName: string) {
+  if (isPlaceholderEmail(user.email)) return;
   const message = rsvpMessage({
     nickname: user.nickname,
     title,
@@ -264,6 +268,25 @@ export const supabaseRepo: Repo = {
       .eq("id", user.id);
     if (error) return fail(error);
     return { ok: true, message: "資料已更新" };
+  },
+  async completeLineProfile(input) {
+    const parsed = parseLineProfile(input);
+    if (!parsed.ok) return parsed;
+    const user = await currentUser();
+    if (!user) return { ok: false, error: "請先用 LINE 加入" };
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        nickname: parsed.data.nickname,
+        phone: parsed.data.phone,
+        city: parsed.data.city,
+        district: parsed.data.district,
+        line_consent_at: new Date().toISOString(),
+      })
+      .eq("id", user.id);
+    if (error) return fail(error);
+    return { ok: true, message: "已儲存，可以報名活動了" };
   },
   async submitPartnerApplication(input) {
     const parsed = parsePartnerApplication(input);

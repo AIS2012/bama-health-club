@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { safeNextPath } from "@/lib/config";
+import { lineConfigured } from "@/lib/line";
+import { establishLineSession } from "@/lib/line-session";
 import { taipeiInputToIso } from "@/lib/format";
 import { getRepo } from "@/lib/repo";
 import { CITIES } from "@/lib/constants";
@@ -46,6 +48,25 @@ export async function signInAction(_prev: Result | null, formData: FormData): Pr
 export async function magicLinkAction(_prev: Result | null, formData: FormData): Promise<Result> {
   const repo = await getRepo();
   return repo.requestMagicLink(textFromForm(formData, "email"));
+}
+
+export async function demoLineLoginAction(_prev: Result | null, formData: FormData): Promise<Result> {
+  if (lineConfigured()) return { ok: false, error: "已設定 LINE，請用綠色按鈕登入" };
+  const next = safeNextPath(formData.get("next"), "/profile");
+  await establishLineSession({ lineUserId: "demo-line-member", displayName: "林示範" });
+  redirect(`/signup/profile?next=${encodeURIComponent(next)}`);
+}
+
+export async function completeLineProfileAction(_prev: Result | null, formData: FormData): Promise<Result> {
+  const repo = await getRepo();
+  const result = await repo.completeLineProfile({
+    nickname: textFromForm(formData, "nickname"),
+    phone: textFromForm(formData, "phone") || null,
+    areaId: textFromForm(formData, "area_id") || null,
+    consent: formData.get("consent") === "on",
+  });
+  if (!result.ok) return result;
+  redirect(safeNextPath(formData.get("next"), "/activities"));
 }
 
 export async function signOutAction() {

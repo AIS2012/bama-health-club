@@ -24,6 +24,8 @@ export type Profile = {
   partnerNumber: string | null;
   homeBranchId: string | null;
   managedBranchId: string | null;
+  lineUserId: string | null;
+  lineConsent: boolean;
 };
 
 export type ActivityListItem = {

@@ -27,6 +27,7 @@ export type Repo = {
   consumeMagicLink(token: string): Promise<Result>;
   signOut(): Promise<void>;
   updateProfile(input: ProfileInput): Promise<Result>;
+  completeLineProfile(input: { nickname: string; phone: string | null; areaId: string | null; consent: boolean }): Promise<Result>;
   submitPartnerApplication(input: PartnerApplicationInput): Promise<Result>;
   listActivities(filter?: { city?: string; category?: string; branchId?: string }): Promise<ActivityListItem[]>;
   getActivity(id: string): Promise<ActivityDetail | null>;

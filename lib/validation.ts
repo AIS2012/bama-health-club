@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { branchById } from "@/lib/branches";
+import { areaById, UNSET_DISTRICT } from "@/lib/areas";
 import { CATEGORIES, CITIES, DISTRICTS, INTERESTS, PARTNER_INDUSTRIES } from "@/lib/constants";
 import type {
   ActivityInput,
@@ -176,6 +177,31 @@ export function parseChallenge(input: ChallengeInput): { ok: true; data: Challen
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "挑戰資料不完整" };
   return { ok: true, data: parsed.data };
+}
+
+export function parseLineProfile(input: {
+  nickname: string;
+  phone: string | null;
+  areaId: string | null;
+  consent: boolean;
+}): { ok: true; data: { nickname: string; phone: string | null; city: string; district: string } } | { ok: false; error: string } {
+  if (!input.consent) return { ok: false, error: "請勾選同意，才能加入" };
+  const area = areaById(input.areaId);
+  const schema = z.object({
+    nickname: z.string().trim().min(1, "請填姓名或暱稱").max(20, "暱稱最多 20 個字"),
+    phone: phoneSchema(),
+  });
+  const parsed = schema.safeParse({ nickname: input.nickname, phone: input.phone });
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "資料不完整" };
+  return {
+    ok: true,
+    data: {
+      nickname: parsed.data.nickname,
+      phone: parsed.data.phone,
+      city: area?.city ?? "台北市",
+      district: area?.district ?? UNSET_DISTRICT,
+    },
+  };
 }
 
 export function parsePartnerApplication(input: PartnerApplicationInput): { ok: true; data: PartnerApplicationInput } | { ok: false; error: string } {
